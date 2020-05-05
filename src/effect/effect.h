@@ -1,0 +1,57 @@
+#pragma once
+#include <chrono>
+#include <thread>
+#include "../driver/cube.h"
+
+extern LedCube cube;
+
+
+class Effect {
+public:
+    void showMillseconds(int millseconds) {
+        while (1) {
+            auto start = std::chrono::system_clock::now();
+            show();
+            auto end = std::chrono::system_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+            if (duration.count() >= millseconds)
+                break;
+        }
+    }
+
+    void showSeconds(int seconds) {
+        while (1) {
+            auto start = std::chrono::system_clock::now();
+            show();
+            auto end = std::chrono::system_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+            if (duration.count() >= seconds)
+                break;
+        }
+    }
+
+    void showCount(int count) {
+        for (int i = 0; i < count; ++i)
+            show();
+    }
+
+    void showOnce() {
+        show();
+    }
+
+protected:
+    virtual void show() = 0;
+
+protected:
+    void sleepUs(int microS) {
+        std::this_thread::sleep_for(std::chrono::microseconds(microS));
+    }
+
+    void sleepMs(int milliS) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(milliS));
+    }
+
+    void sleepS(int s) {
+        std::this_thread::sleep_for(std::chrono::seconds(s));
+    }
+};
