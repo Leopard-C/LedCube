@@ -1,4 +1,6 @@
 #include "driver/cube.h"
+#include "driver/cube_extend.h"
+#include "utility/image_lib.h"
 #include <cstdio>
 #include <cstdlib>
 #include <thread>
@@ -17,8 +19,9 @@
 #include "effect/drop_line.h"
 #include "effect/drop_point.h"
 #include "effect/random_drop_point.h"
-#include "effect/drop_text.h"
 #include "effect/drop_text_point.h"
+#include "effect/text_scan.h"
+#include "effect/cube_size.h"
 
 LedCube cube;
 
@@ -28,172 +31,248 @@ void sleepMs(int ms) {
 
 
 int main() {
+//    sleepMs(3000);
     if (wiringPiSetupGpio() == -1) {
         printf("Wiringpi setup failed\n");
         return 1;
     }
 
-    if (!cube.setup()) {
-        printf("Cube setup failed!\n");
-        return 1;
-    }
+    // must setup after wiringPiSetupGpio() !
+    cube.setup();
 
-    int skip = 0;
+//    pinMode(18, OUTPUT);
+//
+//
+//    int count = 1000;
+//
+//    int drive = 0;
+//
+//    auto start = std::chrono::high_resolution_clock::now();
+//    for (int i = 0; i < count; ++i) {
+//        digitalWrite(18, drive);
+//        drive = 1 - drive;
+//    }
+//
+//    digitalWrite(18, LOW);
+//
+//    auto end = std::chrono::high_resolution_clock::now();
+//    auto dur = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+//    std::cout << dur.count() / double(count) << std::endl;
+//
+//    return 0;
 
-    // 1 Layer scan (slow)
-    skip = 0;
-    if (!skip)
+    /***************************************************
+     *
+     *           1.  Scan a whole layer
+     *
+    ***************************************************/
+    if (0)
     {
         LayerScanEffect layerScan;
-        //layerScan.setDirections({X_ASCEND, Y_ASCEND, Z_ASCEND, X_DESCEND, Y_DESCEND, Z_DESCEND});
-        // equal to:
-        layerScan.setDefaultDirections();
+        layerScan.setImagesCode({ Image_Fill });  // light a whole layer
+        layerScan.setDirectionsAngles(
+             { X_ASCEND,  Z_ASCEND,  Y_ASCEND,  X_DESCEND, Y_DESCEND, Z_DESCEND },
+             { X_ASCEND,  Z_ASCEND,  Y_ASCEND,  X_DESCEND, Y_DESCEND, Z_DESCEND },
+             { ANGLE_0,   ANGLE_0,   ANGLE_0,   ANGLE_0,   ANGLE_0,   ANGLE_0  }
+            );
 
         // 1.1 slow
-        layerScan.setInterval(160, 1);
+        layerScan.setIntervals(100, 50);
         layerScan.showOnce();
 
         // 1.2 fast
-        layerScan.setInterval(80, 1);
+        layerScan.setIntervals(70, 50);
         layerScan.showOnce();
     }
 
-    // 2. random light on
-    skip = 0;
-    if (!skip)
+    //return 0;
+
+
+    /***************************************************
+     *
+     *           2.  Random light
+     *
+    ***************************************************/
+    if (1)
     {
         RandomLightEffect randomLight;
         randomLight.setInterval(50);
-        randomLight.setCount(300);
+        randomLight.setCount(400);
+
+        randomLight.setStates({ LED_ON, LED_OFF });
         randomLight.showOnce();
     }
 
-    // 3. drop a line
-    skip = 0;
-    if (!skip)
+    return 0;
+
+
+    /***************************************************
+     *
+     *           3.  Drop a line
+     *
+    ***************************************************/
+    if (0)
     {
         DropLineEffect dropLine;
-        dropLine.setInterval(30);
-        dropLine.setDefaultDirections();
+        dropLine.setDirections(
+            { X_ASCEND,   X_DESCEND,  X_ASCEND,   X_DESCEND,
+              Y_DESCEND,  Y_ASCEND,   Y_DESCEND,  Y_ASCEND,
+              Z_ASCEND,   Z_DESCEND,  Z_ASCEND,   Z_DESCEND,
+            },
+            {
+              PARALLEL_Y, PARALLEL_Y, PARALLEL_Z, PARALLEL_Z,
+              PARALLEL_X, PARALLEL_X, PARALLEL_Z, PARALLEL_Z,
+              PARALLEL_X, PARALLEL_X, PARALLEL_Y, PARALLEL_Y
+            }
+        );
+
+        dropLine.setIntervals(30, 0);
         dropLine.showOnce();
     }
 
-    // 4. drop a point 
-    skip = 0;
-    if (!skip)
+    //return 0;
+
+
+    /***************************************************
+     *
+     *           4.  Drop a point in row
+     *
+    ***************************************************/
+    if (0)
     {
         DropPointEffect dropPoint;
-        dropPoint.setInterval(10);
-        dropPoint.setDefaultDirections();
+        dropPoint.setDirections(
+            { X_ASCEND,   X_DESCEND,  X_ASCEND,   X_DESCEND,
+              Y_DESCEND,  Y_ASCEND,   Y_DESCEND,  Y_ASCEND,
+              Z_ASCEND,   Z_DESCEND,  Z_ASCEND,   Z_DESCEND,
+            },
+            {
+              PARALLEL_Y, PARALLEL_Y, PARALLEL_Z, PARALLEL_Z,
+              PARALLEL_X, PARALLEL_X, PARALLEL_Z, PARALLEL_Z,
+              PARALLEL_X, PARALLEL_X, PARALLEL_Y, PARALLEL_Y
+            }
+        );
+        dropPoint.setIntervals(10, 0);
         dropPoint.showOnce();
     }
 
-    // 5. random drop a point 
-    skip = 0;
-    if (!skip)
+    //return 0;
+
+
+    /***************************************************
+     *
+     *           5.  random drop a point 
+     *
+    ***************************************************/
+    if (0)
     {
         RandomDropPointEffect randomDropPoint;
-        randomDropPoint.setInterval(10);
-        randomDropPoint.setDefaultDirections();
+        randomDropPoint.setDirections({
+            X_ASCEND,  X_DESCEND, Y_DESCEND,
+            Y_ASCEND,  Z_ASCEND,  Z_DESCEND});
+        randomDropPoint.setIntervals(10, 0);
         randomDropPoint.showOnce();
     }
 
-    // 6. drop text point
-    skip = 0;
-    if (!skip)
+    //return 0;
+
+
+    /***************************************************
+     *
+     *           6.  text scan
+     *
+    ***************************************************/
+    if (0)
     {
-        DropTextPointEffect dropTextPoint;
-        dropTextPoint.setDirectionsAngles(
-             { X_ASCEND,  X_DESCEND, Y_ASCEND,  Y_DESCEND, Z_ASCEND,  Z_DESCEND },
-             { X_DESCEND, X_ASCEND,  Y_DESCEND, Y_ASCEND,  Z_DESCEND, Z_ASCEND  },
-             { ANGLE_0,   ANGLE_0,   ANGLE_0,   ANGLE_0,   ANGLE_0,   ANGLE_0   }
+        TextScanEffect textScan;
+        textScan.setText("HAPPY BIRTHDAY TO ME");
+        textScan.setDirectionsAngles(
+             { X_ASCEND,  Z_ASCEND,  Y_DESCEND },
+             { X_ASCEND,  Z_ASCEND,  Y_DESCEND },
+             { ANGLE_0,   ANGLE_0,   ANGLE_0   }
             );
-        dropTextPoint.setInterval(15, 200);
-        dropTextPoint.setString("Misaka");
-        dropTextPoint.showOnce();
+
+        textScan.setIntervals(80, 50);
+        textScan.showOnce();
     }
 
-    // 7. drop text
-    skip = 0;
-    if (!skip)
-    {
-        DropTextEffect dropText;
-        dropText.setDirectionsAngles(
-             { X_ASCEND,  Y_DESCEND, Z_ASCEND },
-             { X_ASCEND,  Y_DESCEND, Z_ASCEND },
-             { ANGLE_0,   ANGLE_0,   ANGLE_0  }
-            );
-        dropText.setInterval(100, 100);
-        dropText.setString("Misaka");
+    //return 0;
 
-        dropText.setTogetherLayers(1);
-        dropText.showOnce();
 
-        dropText.setTogetherLayers(2);
-        dropText.showOnce();
-    }
-
-    // 8. Happy birthday to misaka mikoto
-    skip = 1;
-    if (!skip)
-    {
-        cube.showStringInLayerX("0502", 600, 7, X_ASCEND, ANGLE_0);
-        Call(cube.clear());
-        sleepMs(1000);
-        cube.showStringInLayerX("HAPPY BIRTHDAY TO MISAKA MIKOTO", 500, 7, X_ASCEND, ANGLE_0);
-        sleepMs(1000);
-
-        std::string str = "0502 HAPPY BIRTHDAY TO MISAKA MIKOTO";
-        DropTextPointEffect dropTextPoint;
-        dropTextPoint.setInterval(12, 200);
-        dropTextPoint.setString(str);
-
-        DropTextEffect dropText;
-        dropText.setInterval(150, 50);
-        dropText.setString(str);
-
-        // Layer X
-        dropTextPoint.setDirectionsAngles({ X_ASCEND }, { X_ASCEND }, { ANGLE_0 });
-        dropTextPoint.showOnce();
-        sleepMs(1000);
-
-        dropText.setDirectionsAngles( { X_ASCEND }, { X_ASCEND }, { ANGLE_0 });
-        dropText.setTogetherLayers(1);
-        dropText.showOnce();
-        sleepMs(1000);
-
-        dropText.setDirectionsAngles({ X_ASCEND }, { X_ASCEND }, { ANGLE_0 });
-        dropText.setTogetherLayers(2);
-        dropText.showOnce();
-        sleepMs(1000);
-
-        return 0;
-
-        // Layer Y
-        dropTextPoint.setDirectionsAngles({ Y_DESCEND }, { Y_DESCEND }, { ANGLE_0 });
-        dropTextPoint.showOnce();
-
-        dropText.setDirectionsAngles( { Y_DESCEND }, { Y_DESCEND }, { ANGLE_0 });
-        dropText.setTogetherLayers(1);
-        dropText.showOnce();
-
-        dropText.setDirectionsAngles({ Y_DESCEND }, { Y_DESCEND }, { ANGLE_0 });
-        dropText.setTogetherLayers(2);
-        dropText.showOnce();
-
-        // Layer Z
-        dropTextPoint.setDirectionsAngles({ Z_ASCEND }, { Z_ASCEND }, { ANGLE_0 });
-        dropTextPoint.showOnce();
-
-        dropText.setDirectionsAngles( { Z_ASCEND }, { Z_ASCEND }, { ANGLE_0 });
-        dropText.setTogetherLayers(1);
-        dropText.showOnce();
-
-        dropText.setDirectionsAngles({ Z_ASCEND }, { Z_ASCEND }, { ANGLE_0 });
-        dropText.setTogetherLayers(2);
-        dropText.showOnce();
+    /***************************************************
+     *
+     *           7.  cube size
+     *
+    ***************************************************/
+    if (1) {
+        CubeSizeEffect cubeSize;
+        cubeSize.setDirections(
+            {
+                X_ASCEND,  X_ASCEND,  X_ASCEND,  X_ASCEND,
+                X_ASCEND,  X_ASCEND,  X_ASCEND,  X_ASCEND
+            //    X_DESCEND, X_DESCEND, X_DESCEND, X_DESCEND,
+             //   X_DESCEND, X_DESCEND, X_DESCEND, X_DESCEND
+            },
+            {
+                Y_ASCEND,  Y_ASCEND,  Y_ASCEND,  Y_ASCEND,
+                Y_DESCEND, Y_DESCEND, Y_DESCEND, Y_DESCEND
+              //  Y_ASCEND,  Y_ASCEND,  Y_ASCEND,  Y_ASCEND,
+               // Y_DESCEND, Y_DESCEND, Y_DESCEND, Y_DESCEND
+            },
+            {
+                Z_ASCEND,  Z_ASCEND,  Z_DESCEND, Z_DESCEND,
+                Z_ASCEND,  Z_ASCEND,  Z_DESCEND, Z_DESCEND
+            //    Z_ASCEND,  Z_ASCEND,  Z_DESCEND, Z_DESCEND,
+             //   Z_ASCEND,  Z_ASCEND,  Z_DESCEND, Z_DESCEND
+            }
+        );
+        cubeSize.setChangesType({
+                SmallToBig, BigToSmall, SmallToBig, BigToSmall,
+                SmallToBig, BigToSmall, SmallToBig, BigToSmall
+        //        SmallToBig, BigToSmall, SmallToBig, BigToSmall,
+         //       SmallToBig, BigToSmall, SmallToBig, BigToSmall,
+            });
+        cubeSize.setIntervals(80, 0);
+        cubeSize.showOnce();
     }
 
     return 0;
+
+
+    /***************************************************
+     *
+     *           
+     *
+    ***************************************************/
+    if (1) {
+
+    }
+
+    return 0;
+
+
+    /***************************************************
+     *
+     *           
+     *
+    ***************************************************/
+    if (1) {
+
+    }
+
+    return 0;
+
+
+    /***************************************************
+     *
+     *           
+     *
+    ***************************************************/
+    if (1) {
+
+    }
+
+    return 0;
+
 }
 

@@ -1,13 +1,15 @@
 #include "./cube.h"
 #include "../utility/image_lib.h"
+#include <cstring>
 #include <thread>
 #include <chrono>
 #include <iostream>
 #include <wiringPi.h>
 
-X74hc154 LedCube::x74hc154[4];
+LedState LedCube::leds[8][8][8];  // Z X Y
+LedState LedCube::ledsBuff[8][8][8];  // Z X Y
 int LedCube::vcc[8];
-int LedCube::leds[8][8][8];  // Z X Y
+X74hc154 LedCube::x74hc154[4];
 bool LedCube::isRunning = true;
 bool LedCube::isBackgroundThreadQuit = true;
 std::mutex LedCube::mutex_;
@@ -20,48 +22,40 @@ LedCube::~LedCube() {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    lightOffAll();
+    reset();
 }
 
-
-void LedCube::lock() {
-    mutex_.lock();
-}
-
-void LedCube::unlock() {
-    mutex_.unlock();
-}
-
-
-bool LedCube::setup() {
+void LedCube::setup() {
     x74hc154[0].setup(17, 27, 22, 5, 6);
     x74hc154[1].setup(17, 27, 22, 5, 13);
     x74hc154[2].setup(17, 27, 22, 5, 19);
     x74hc154[3].setup(17, 27, 22, 5, 26);
 
-    vcc[0] = 18;
-    vcc[1] = 23;
-    vcc[2] = 24;
-    vcc[3] = 25;
-    vcc[4] = 12;
-    vcc[5] = 16;
-    vcc[6] = 20;
-    vcc[7] = 21;
+    vcc[0] = 18;  vcc[1] = 23;
+    vcc[2] = 24;  vcc[3] = 25;
+    vcc[4] = 12;  vcc[5] = 16;
+    vcc[6] = 20;  vcc[7] = 21;
 
     for (int i = 0; i < 8; ++i) {
         pinMode(vcc[i], OUTPUT);
     }
 
-    lightOffAll();
+    reset();
 
     std::thread t(backgroundThread);
     t.detach();
+}
 
-    return true;
+void LedCube::update() {
+    mutex_.lock();
+    memcpy(leds, ledsBuff, 512);
+    mutex_.unlock();
 }
 
 
-void LedCube::lightOffAll() {
+// private method !!
+//
+void LedCube::reset() {
     // 74hc154
     // set G1 or G2 to HIGH
     // so all the outputs are HIGH
@@ -79,6 +73,7 @@ void LedCube::lightOffAll() {
         for (int x = 0; x < 8; ++x) {
             for (int y = 0; y < 8; ++y) {
                 leds[z][x][y] = LED_OFF;
+                ledsBuff[z][x][y] = LED_OFF;
             }
         }
     }
@@ -98,31 +93,33 @@ void LedCube::backgroundThread() {
         mutex_.lock();
         for (int z = 0; z < 8; ++z) {
             for (int x = 0; x < 8; ++x) {
-                lightRowX(z, x);
+                int idx = x / 2;
+                digitalWrite(vcc[z], HIGH);
+                for (int y = 0; y < 8; ++y) {
+                    if (leds[z][x][y] == LED_ON) {
+                        x74hc154[idx].setOutput(y + 8 * (x % 2));
+                        x74hc154[idx].enable(true);
+                        // slepp servel nanoseconds
+                        // shouldn't use:
+                        //   std::this_thread::sleep_for(std::chrono::nanoseconds(100));
+                        //   even if you want to sleep 1 ns, it will consume 10000+ ns really
+                        for (int i = 0; i < 200; ++i) {
+                            //;
+                        }
+                        x74hc154[idx].enable(false);
+                    }
+                }
+                digitalWrite(vcc[z], LOW);
             }
         }
         mutex_.unlock();
-        std::this_thread::sleep_for(std::chrono::nanoseconds(300));
+        for (int i = 0; i < 5000; ++i) {
+            //;
+        }
     }
 
     isBackgroundThreadQuit = true;
     printf("Background thread quit!\n");
-}
-
-void LedCube::lightRowX(int z, int x) {
-    int idx = x / 2;
-    digitalWrite(vcc[z], HIGH);
-    for (int y = 0; y < 8; ++y) {
-        //printf("%d %d %d : ", x, y, z);
-        if (leds[z][x][y] == LED_ON) {
-            x74hc154[idx].setOutput(y + 8 * (x % 2));
-            //std::this_thread::sleep_for(std::chrono::nanoseconds(500));
-            x74hc154[idx].enable(true);
-            std::this_thread::sleep_for(std::chrono::nanoseconds(300));
-            x74hc154[idx].enable(false);
-        }
-    }
-    digitalWrite(vcc[z], LOW);
 }
 
 
@@ -135,40 +132,40 @@ void LedCube::clear() {
     for (int z = 0; z < 8; ++z) {
         for (int x = 0; x < 8; ++x) {
             for (int y = 0; y < 8; ++y) {
-                leds[z][x][y] = LED_OFF;
+                ledsBuff[z][x][y] = LED_OFF;
             }
         }
     }
 }
 
 
-/***************************************************
+/**************************************************
  *
- *  Light on or off a whole layer
+ *      Light on or off a layer
  *
-***************************************************/
-void LedCube::lightLayerX(int x, int state) {
+**************************************************/
+void LedCube::lightLayerX(int x, LedState state) {
     for (int z = 0; z < 8; ++z) {
         for (int y = 0; y < 8; ++y) {
-            leds[z][x][y] = state;
+            ledsBuff[z][x][y] = state;
         }
     }
 }
 
 
-void LedCube::lightLayerY(int y, int state) {
+void LedCube::lightLayerY(int y, LedState state) {
     for (int z = 0; z < 8; ++z) {
         for (int x = 0; x < 8; ++x) {
-            leds[z][x][y] = state;
+            ledsBuff[z][x][y] = state;
         }
     }
 }
 
 
-void LedCube::lightLayerZ(int z, int state) {
+void LedCube::lightLayerZ(int z, LedState state) {
     for (int x = 0; x < 8; ++x) {
         for (int y = 0; y < 8; ++y) {
-            leds[z][x][y] = state;
+            ledsBuff[z][x][y] = state;
         }
     }
 }
@@ -176,31 +173,31 @@ void LedCube::lightLayerZ(int z, int state) {
 
 /***************************************************
  *
- *  Light on or off a row
+ *        Light on or off a row
  *
 ***************************************************/
-void LedCube::lightRowXY(int x, int y, int state) {
+void LedCube::lightRowXY(int x, int y, LedState state) {
     for (int z = 0; z < 8; ++z) {
-        leds[z][x][y] = state;
+        ledsBuff[z][x][y] = state;
     }
 }
 
-void LedCube::lightRowYZ(int y, int z, int state)  {
+void LedCube::lightRowYZ(int y, int z, LedState state)  {
     for (int x = 0; x < 8; ++x) {
-        leds[z][x][y] = state;
+        ledsBuff[z][x][y] = state;
     }
 }
 
-void LedCube::lightRowXZ(int x, int z, int state) {
+void LedCube::lightRowXZ(int x, int z, LedState state) {
     for (int y = 0; y < 8; ++y) {
-        leds[z][x][y] = state;
+        ledsBuff[z][x][y] = state;
     }
 }
 
 
 /***************************************************
  *
- *  Show Text in a layer
+ *      Show Image(including text) in a layer
  *
 ***************************************************/
 void LedCube::setImageInLayerZ(unsigned char ch, int z, Direction direction, Angle rotate) {
@@ -224,7 +221,7 @@ void LedCube::setImageInLayerX(unsigned char ch, int x, Direction direction, Ang
 void LedCube::setImageInLayerZ(int z, const Array2D_8_8& image) {
     for (int x = 0; x < 8; ++x) {
         for (int y = 0; y < 8; ++y) {
-            leds[z][x][y] = image[x][y];
+            ledsBuff[z][x][y] = image[x][y];
         }
     }
 }
@@ -232,7 +229,7 @@ void LedCube::setImageInLayerZ(int z, const Array2D_8_8& image) {
 void LedCube::setImageInLayerY(int y, const Array2D_8_8& image) {
     for (int z = 0; z < 8; ++z) {
         for (int x = 0; x < 8; ++x) {
-            leds[z][x][y] = image[z][x];
+            ledsBuff[z][x][y] = image[z][x];
         }
     }
 }
@@ -240,7 +237,7 @@ void LedCube::setImageInLayerY(int y, const Array2D_8_8& image) {
 void LedCube::setImageInLayerX(int x, const Array2D_8_8& image) {
     for (int z = 0; z < 8; ++z) {
         for (int y = 0; y < 8; ++y) {
-            leds[z][x][y] = image[z][y];
+            ledsBuff[z][x][y] = image[z][y];
         }
     }
 }
@@ -463,9 +460,7 @@ void LedCube::getImageInLayerX(Array2D_8_8& image, unsigned char ch, Direction d
 void LedCube::showStringInLayerZ(std::string str, int interval, int z, Direction direction, Angle rotate) {
     ImageLib::validate(str);
     for (auto ch : str) {
-        mutex_.lock();
         setImageInLayerZ(ch, z, direction, rotate);
-        mutex_.unlock();
         std::this_thread::sleep_for(std::chrono::milliseconds(interval));
     }
 }
@@ -473,9 +468,7 @@ void LedCube::showStringInLayerZ(std::string str, int interval, int z, Direction
 void LedCube::showStringInLayerY(std::string str, int interval, int y, Direction direction, Angle rotate) {
     ImageLib::validate(str);
     for (auto ch : str) {
-        mutex_.lock();
         setImageInLayerY(ch, y, direction, rotate);
-        mutex_.unlock();
         std::this_thread::sleep_for(std::chrono::milliseconds(interval));
     }
 }
@@ -483,9 +476,7 @@ void LedCube::showStringInLayerY(std::string str, int interval, int y, Direction
 void LedCube::showStringInLayerX(std::string str, int interval, int x, Direction direction, Angle rotate) {
     ImageLib::validate(str);
     for (auto ch : str) {
-        mutex_.lock();
         setImageInLayerX(ch, x, direction, rotate);
-        mutex_.unlock();
         if (ch == ' ')
             std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
         else

@@ -4,11 +4,27 @@
 #include "../utility/directions.h"
 #include <mutex>
 #include <array>
+#include <iostream>
 
 #define LED_ON  1
 #define LED_OFF 0
 
-#define Call(x) LedCube::lock(); (x); LedCube::unlock();
+using LedState = char;
+
+#define Call(x) (x); LedCube::update();
+
+struct Coordinate {
+    Coordinate(int x = 0, int y = 0, int z = 0) :
+        x(x), y(y), z(z) {}
+    int x;
+    int y;
+    int z;
+};
+
+inline std::ostream& operator<<(std::ostream& os, const Coordinate& coord) {
+    os << "(" << coord.x << ", " << coord.y << ", " << coord.y << ")";
+    return os;
+}
 
 
 class LedCube {
@@ -16,41 +32,47 @@ public:
     LedCube() {}
     ~LedCube();
 
-    bool setup();
+    /*************************
+     * initialize
+    *************************/
+    void setup();
 
-    static void lock();
-    static void unlock();
+    /*********************************************
+     * copy and apply the LEDs state buffer
+     * refresh the cube
+    *********************************************/
+    static void update();
 
     /****************************
      *     Light off All LEDs
     ****************************/
-    void clear();
+    static void clear();
 
 
     /****************************
      *     Led in (x, y, z)
     ****************************/
-    int& operator()(int x, int y, int z) { return leds[z][x][y]; }
+    LedState& operator()(int x, int y, int z) { return ledsBuff[z][x][y]; }
 
 
     /***************************
-     *         Layer
+     *    light a layer
     ***************************/
-    void lightLayerX(int x, int state);
-    void lightLayerY(int y, int state);
-    void lightLayerZ(int z, int state);
+    void lightLayerX(int x, LedState state);
+    void lightLayerY(int y, LedState state);
+    void lightLayerZ(int z, LedState state);
 
 
     /***************************
-     *        Row
+     *    light a row
     ***************************/
-    void lightRowXY(int x, int y, int state);
-    void lightRowYZ(int y, int z, int state);
-    void lightRowXZ(int x, int z, int state);
+    void lightRowXY(int x, int y, LedState state);
+    void lightRowYZ(int y, int z, LedState state);
+    void lightRowXZ(int x, int z, LedState state);
 
 
     /********************************
-     *      Show Text or Image
+     *    Show Image in a layer
     ********************************/
     using Array2D_8_8 = std::array<std::array<unsigned char, 8>, 8>;
     void getImageInLayerZ(Array2D_8_8& image, unsigned char ch, Direction direction = Z_ASCEND, Angle rotate = ANGLE_0);
@@ -71,18 +93,17 @@ public:
 
 private:
     static void backgroundThread();
-    static void lightRowX(int z, int x);
-    static void lightOffAll();
+    static void reset();
 
 private:
     static int vcc[8];
     static X74hc154 x74hc154[4];
 
-    static int leds[8][8][8];  // Z X Y
+    static LedState leds[8][8][8];  // Z X Y
+    static LedState ledsBuff[8][8][8];  // Z X Y
 
     static bool isRunning;
     static bool isBackgroundThreadQuit;
-
     static std::mutex mutex_;
 };
 

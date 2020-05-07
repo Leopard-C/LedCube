@@ -1,21 +1,26 @@
 #pragma once
 #include "effect.h"
+#include "../utility/intervals.h"
+#include <vector>
 
 
-class RandomLightEffect : public Effect {
+class RandomLightEffect :
+    public Effect,
+    public Interval
+{
 public:
-    void setInterval(int interval) {
-        interval_ = interval;
-    }
-
     void setCount(int count) {
         count_ = count;
     }
 
-protected:
+    void setStates(const std::vector<int>& states) {
+        states_ = states;
+    }
+
+public:
     virtual void show();
 
 private:
-    int interval_ = 50;
     int count_ = 256;
+    std::vector<int> states_;
 };

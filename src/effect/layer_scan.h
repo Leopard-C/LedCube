@@ -1,23 +1,40 @@
 #pragma once
-
 #include "./effect.h"
 #include "../utility/directions.h"
-#include <vector>
+#include "../utility/intervals.h"
+#include "../utility/image_lib.h"
+
 
 class LayerScanEffect :
     public Effect,
-    public Directions
+    public DirectionsAnglePair,
+    public IntervalsPair
 {
 public:
-    void setInterval(int interval1, int interval2) {
-        interval1_ = interval1;
-        interval2_ = interval2;
+    void setImagesCode(const std::vector<int>& imagesCodeIn) {
+        imagesCode_ = imagesCodeIn;
     }
 
-protected:
+    void setRotate(Angle rotate) {
+        rotate_ = rotate;
+    }
+
+    void setTogetherLayers(int together) {
+        if (together > 0 && together < 6)
+            together_ = together;
+        else
+            together_ = 1;
+    }
+
+public:
     virtual void show();
 
 private:
-    int interval1_ = 50;
-    int interval2_ = 50;
+    void show(Direction direction, Direction subDirection, Angle angle);
+
+private:
+    std::vector<int> imagesCode_;
+    Angle rotate_ = ANGLE_0;
+    int together_ = 1;
 };
+

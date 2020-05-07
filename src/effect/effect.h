@@ -39,19 +39,22 @@ public:
         show();
     }
 
-protected:
+public:
     virtual void show() = 0;
 
 protected:
     void sleepUs(int microS) {
-        std::this_thread::sleep_for(std::chrono::microseconds(microS));
+        if (microS > 0)
+            std::this_thread::sleep_for(std::chrono::microseconds(microS));
     }
 
     void sleepMs(int milliS) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(milliS));
+        if (milliS > 0)
+            std::this_thread::sleep_for(std::chrono::milliseconds(milliS));
     }
 
     void sleepS(int s) {
-        std::this_thread::sleep_for(std::chrono::seconds(s));
+        if (s > 0)
+            std::this_thread::sleep_for(std::chrono::seconds(s));
     }
 };

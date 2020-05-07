@@ -24,10 +24,12 @@ enum {
     Letter_W  = 'W',    Letter_X  = 'X',
     Letter_Y  = 'Y',    Letter_Z  = 'Z',
 
-    Space = ' ',
+    Image_Fill             = 255,
+    Image_Space            = ' ',
+    Image_ExclamationPoint = '!',
 
     // Other text or image (not in ASCII table)
-    BASE           = 256
+    Image_Base           = 256
 };
 
 class ImageLib {

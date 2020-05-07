@@ -23,14 +23,6 @@ public:
         std::vector<Direction>().swap(directions_);
     }
 
-    void setDefaultDirections() {
-        std::vector<Direction> directions = {
-            X_ASCEND,  Y_ASCEND,  Z_ASCEND,
-            X_DESCEND, Y_DESCEND, Z_DESCEND
-        };
-        directions.swap(directions_);
-    }
-
     void setDirections(const std::vector<Direction>& directions) {
         directions_ = directions;
     }
@@ -51,21 +43,6 @@ public:
         std::vector<Direction>().swap(subDirections_);
     }
 
-    void setDefaultDirections() {
-        std::vector<Direction> directions = {
-            X_ASCEND, X_DESCEND, X_ASCEND, X_DESCEND,
-            Y_ASCEND, Y_DESCEND, Y_ASCEND, Y_DESCEND,
-            Z_ASCEND, Z_DESCEND, Z_ASCEND, Z_DESCEND
-        };
-        std::vector<Direction> subDirections = {
-            PARALLEL_Y, PARALLEL_Z, PARALLEL_Z, PARALLEL_Y,
-            PARALLEL_X, PARALLEL_Z, PARALLEL_Z, PARALLEL_X,
-            PARALLEL_X, PARALLEL_Y, PARALLEL_Y, PARALLEL_X
-        };
-        directions.swap(directions_);
-        subDirections.swap(subDirections_);
-    }
-
     void setDirections(const std::vector<Direction>& directions,
             const std::vector<Direction>& subDirections) {
         directions_ = directions;
@@ -80,6 +57,35 @@ public:
 protected:
     std::vector<Direction> directions_;
     std::vector<Direction> subDirections_;
+};
+
+
+class DirectionsTri {
+public:
+    void clear() {
+        std::vector<Direction>().swap(directions1_);
+        std::vector<Direction>().swap(directions2_);
+        std::vector<Direction>().swap(directions3_);
+    }
+
+    void setDirections(const std::vector<Direction>& directions1,
+            const std::vector<Direction>& directions2,
+            const std::vector<Direction>& directions3) {
+        directions1_ = directions1;
+        directions2_ = directions2;
+        directions3_ = directions3;
+    }
+
+    void emplaceDirection(Direction direction1, Direction direction2, Direction direction3) {
+        directions1_.push_back(direction1);
+        directions2_.push_back(direction2);
+        directions3_.push_back(direction3);
+    }
+
+protected:
+    std::vector<Direction> directions1_;
+    std::vector<Direction> directions2_;
+    std::vector<Direction> directions3_;
 };
 
 

@@ -9,7 +9,11 @@ public:
     void update();
 
 private:
+    static int hex[16][4];
+
+private:
     int pinA, pinB, pinC, pinD;
+    int* last_input;
     int pinG;
 };
 
