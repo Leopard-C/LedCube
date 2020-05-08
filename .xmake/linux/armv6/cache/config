@@ -1,8 +1,0 @@
-{
-    mtimes = {
-        ["xmake.lua"] = 1588673404
-    },
-    options_all = { },
-    __version = "2.3.3",
-    options_led_cube = ref("options_all")
-}

@@ -1,2 +1,3 @@
-./build
-./.xmake
+build
+.xmake
+led_cube

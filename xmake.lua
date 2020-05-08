@@ -19,3 +19,6 @@ target("led_cube")
     -- link flags
     add_links("pthread", "wiringPi")
 
+    add_mflags("-O3")
+    
+
