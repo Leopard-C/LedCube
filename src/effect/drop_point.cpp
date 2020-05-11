@@ -1,211 +1,487 @@
 #include "drop_point.h"
+#include "../utility/image_lib.h"
+#include "../utility/utils.h"
+
 
 void DropPointEffect::show() {
-    if (subDirections_.size() != directions_.size())
-        return;
-
-    int size = directions_.size();
-    for (int i = 0; i < size; ++i) {
-        show(directions_[i], subDirections_[i]);
-        sleepMs(interval2_);
+    for (auto& event : events_) {
+        for (auto imageCode : imagesCode_) {
+            show(imageCode, event.viewDirection, event.dropDirection, event.parallel, event.rotate,
+                    event.is_S_Shape, event.together, event.interval1, event.interval2);
+        }
     }
 }
 
-void DropPointEffect::show(Direction direction, Direction subDirection) {
-    switch(direction) {
-    case X_ASCEND:
-        if (subDirection == PARALLEL_Y) {
-            Call(cube.clear());
-            Call(cube.lightLayerX(0, LED_ON));
-            sleepMs(interval1_);
-            for (int z = 0; z < 8; ++z) {
-                for (int y = 0; y < 8; ++y) {
-                    for (int x = 1; x < 8; ++x) {
-                        cube(x - 1, y, z) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        else if (subDirection == PARALLEL_Z) {
-            Call(cube.clear());
-            Call(cube.lightLayerX(0, LED_ON));
-            sleepMs(interval1_);
-            for (int y = 0; y < 8; ++y) {
-                for (int z = 0; z < 8; ++z) {
-                    for (int x = 1; x < 8; ++x) {
-                        cube(x - 1, y, z) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        break;
-    case X_DESCEND:
-        if (subDirection == PARALLEL_Y) {
-            Call(cube.clear());
-            Call(cube.lightLayerX(7, LED_ON));
-            sleepMs(interval1_);
-            for (int z = 0; z < 8; ++z) {
-                for (int y = 0; y < 8; ++y) {
-                    for (int x = 6; x > -1; --x) {
-                        cube(x + 1, y, z) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        else if (subDirection == PARALLEL_Z) {
-            Call(cube.clear());
-            Call(cube.lightLayerX(7, LED_ON));
-            sleepMs(interval1_);
-            for (int y = 0; y < 8; ++y) {
-                for (int z = 0; z < 8; ++z) {
-                    for (int x = 6; x > -1; --x) {
-                        cube(x + 1, y, z) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-            break;
-        }
-    case Y_ASCEND:
-        if (subDirection == PARALLEL_X) {
-            Call(cube.clear());
-            Call(cube.lightLayerY(0, LED_ON));
-            sleepMs(interval1_);
-            for (int z = 0; z < 8; ++z) {
-                for (int x = 0; x < 8; ++x) {
-                    for (int y = 1; y < 8; ++y) {
-                        cube(x, y - 1, z) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        else if (subDirection == PARALLEL_Z) {
-            Call(cube.clear());
-            Call(cube.lightLayerY(0, LED_ON));
-            sleepMs(interval1_);
-            for (int x = 0; x < 8; ++x) {
-                for (int z = 0; z < 8; ++z) {
-                    for (int y = 1 ; y < 8; ++y) {
-                        cube(x, y - 1, z) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        break;
-    case Y_DESCEND:
-        if (subDirection == PARALLEL_X) {
-            Call(cube.clear());
-            Call(cube.lightLayerY(7, LED_ON));
-            sleepMs(interval1_);
-            for (int z = 0; z < 8; ++z) {
-                for (int x = 0; x < 8; ++x) {
-                    for (int y = 6; y > -1; --y) {
-                        cube(x, y + 1, z) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        else if (subDirection == PARALLEL_Z) {
-            Call(cube.clear());
-            Call(cube.lightLayerY(7, LED_ON));
-            sleepMs(interval1_);
-            for (int x = 0; x < 8; ++x) {
-                for (int z = 0; z < 8; ++z) {
-                    for (int y = 6 ; y > -1; --y) {
-                        cube(x, y + 1, z) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        break;
-    case Z_ASCEND:
-        if (subDirection == PARALLEL_X) {
-            Call(cube.clear());
-            Call(cube.lightLayerZ(0, LED_ON));
-            sleepMs(interval1_);
-            for (int y = 0; y < 8; ++y) {
-                for (int x = 0; x < 8; ++x) {
-                    for (int z = 1; z < 8; ++z) {
-                        cube(x, y, z - 1) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        else if (subDirection == PARALLEL_Y) {
-            Call(cube.clear());
-            Call(cube.lightLayerZ(0, LED_ON));
-            sleepMs(interval1_);
-            for (int x = 0; x < 8; ++x) {
-                for (int y = 0; y < 8; ++y) {
-                    for (int z = 1; z < 8; ++z) {
-                        cube(x, y, z - 1) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        break;
-    case Z_DESCEND:
-        if (subDirection == PARALLEL_X) {
-            Call(cube.clear());
-            Call(cube.lightLayerZ(7, LED_ON));
-            sleepMs(interval1_);
-            for (int y = 0; y < 8; ++y) {
-                for (int x = 0; x < 8; ++x) {
-                    for (int z = 6; z > -1; --z) {
-                        cube(x, y, z + 1) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        else if (subDirection == PARALLEL_Y) {
-            Call(cube.clear());
-            Call(cube.lightLayerZ(7, LED_ON));
-            sleepMs(interval1_);
-            for (int x = 0; x < 8; ++x) {
-                for (int y = 0; y < 8; ++y) {
-                    for (int z = 6; z > -1; --z) {
-                        cube(x, y, z + 1) = LED_OFF;
-                        cube(x, y, z) = LED_ON;
-                        cube.update();
-                        sleepMs(interval1_);
-                    }
-                }
-            }
-        }
-        break;
-    default:
-        break;
+void DropPointEffect::show(int imageCode, Direction viewDirection, Direction dropDirection,
+    Direction parallel, Angle rotate, bool is_S_Shape, int together, int interval1, int interval2)
+{
+    Call(cube.clear());
+
+    if (imageCode == ' ') {
+        sleepMs(interval2);
     }
+
+    LedCube::Array2D_8_8 image;
+
+    if (viewDirection == X_ASCEND || viewDirection == X_DESCEND) {
+        cube.getImageInLayerX(image, imageCode, viewDirection, rotate);
+        if (dropDirection == X_ASCEND) {
+            Call(cube.lightLayerX(0, image));
+            sleepMs(interval1);
+            if (parallel == PARALLEL_Y) {
+                for (int z = 0; z < 8; ++z) {
+                    for (int y = 0; y < 8; ++y) {
+                        if (cube(0, y, z) == LED_OFF)
+                            continue;
+                        for (int x = 1; x < 7 + together; ++x) {
+                            if (x - together > -1)
+                                cube(x - together, y, z) = LED_OFF;
+                            if (x < 8)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++z;
+                        for (int y = 7; y > -1; --y) {
+                            for (int x = 1; x < 7 + together; ++x) {
+                                if (x - together > -1)
+                                    cube(x - together, y, z) = LED_OFF;
+                                if (x < 8)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (parallel == PARALLEL_Z) {
+                for (int y = 0; y < 8; ++y) {
+                    for (int z = 0; z < 8; ++z) {
+                        if (cube(0, y, z) == LED_OFF)
+                            continue;
+                        for (int x = 1; x < 7 + together; ++x) {
+                            if (x - together > -1)
+                                cube(x - together, y, z) = LED_OFF;
+                            if (x < 8)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++y;
+                        for (int z = 7; z > -1; --z) {
+                            for (int x = 1; x < 7 + together; ++x) {
+                                if (x - together > -1)
+                                    cube(x - together, y, z) = LED_OFF;
+                                if (x < 8)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            }//parallel
+        }//dropDirection
+        else if (dropDirection == X_DESCEND) {
+            Call(cube.lightLayerX(7, image));
+            sleepMs(interval1);
+            if (parallel == PARALLEL_Y) {
+                for (int z = 0; z < 8; ++z) {
+                    for (int y = 0; y < 8; ++y) {
+                        if (cube(7, y, z) == LED_OFF)
+                            continue;
+                        for (int x = 6; x > -together; --x) {
+                            if (x + together < 8)
+                                cube(x + together, y, z) = LED_OFF;
+                            if (x > -1)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++z;
+                        for (int y = 7; y > -1; --y) {
+                            for (int x = 6; x > -together; --x) {
+                                if (x + together < 8)
+                                    cube(x + together, y, z) = LED_OFF;
+                                if (x > -1)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (parallel == PARALLEL_Z) {
+                for (int y = 0; y < 8; ++y) {
+                    for (int z = 0; z < 8; ++z) {
+                        if (cube(7, y, z) == LED_OFF)
+                            continue;
+                        for (int x = 6; x > -together; --x) {
+                            if (x + together < 8)
+                                cube(x + together, y, z) = LED_OFF;
+                            if (x > -1)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++y;
+                        for (int z = 7; z > -1; --z) {
+                            for (int x = 6; x > -together; --x) {
+                                if (x + together < 8)
+                                    cube(x + together, y, z) = LED_OFF;
+                                if (x > -1)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            } // parallel
+        } //dropDirection
+    }//viewDirection
+
+    else if (viewDirection == Y_ASCEND || viewDirection == Y_DESCEND) {
+        cube.getImageInLayerY(image, imageCode, viewDirection, rotate);
+        if (dropDirection == Y_ASCEND) {
+            Call(cube.lightLayerY(0, image));
+            sleepMs(interval1);
+            if (parallel == PARALLEL_X) {
+                for (int z = 0; z < 8; ++z) {
+                    for (int x = 0; x < 8; ++x) {
+                        if (cube(x, 0, z) == LED_OFF)
+                            continue;
+                        for (int y = 1; y < 7 + together; ++y) {
+                            if (y - together > -1)
+                                cube(x, y - together, z) = LED_OFF;
+                            if (y < 8)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++z;
+                        for (int x = 7; x > -1; --x) {
+                            for (int y = 1; y < 7 + together; ++y) {
+                                if (y - together > -1)
+                                    cube(x, y - together, z) = LED_OFF;
+                                if (y < 8)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (parallel == PARALLEL_Z) {
+                for (int x = 0; x < 8; ++x) {
+                    for (int z = 0; z < 8; ++z) {
+                        if (cube(x, 0, z) == LED_OFF)
+                            continue;
+                        for (int y = 1; y < 7 + together; ++y) {
+                            if (y - together > -1)
+                                cube(x, y - together, z) = LED_OFF;
+                            if (y < 8)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++x;
+                        for (int z = 7; z > -1; --z) {
+                            for (int y = 1; y < 7 + together; ++y) {
+                                if (y - together > -1)
+                                    cube(x, y - together, z) = LED_OFF;
+                                if (y < 8)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            } //parallel
+        } //dropDirection
+        else if (dropDirection == Y_DESCEND) {
+            Call(cube.lightLayerY(7, image));
+            sleepMs(interval1);
+            if (parallel == PARALLEL_X) {
+                for (int z = 0; z < 8; ++z) {
+                    for (int x = 0; x < 8; ++x) {
+                        if (cube(x, 7, z) == LED_OFF)
+                            continue;
+                        for (int y = 6; y > -together; --y) {
+                            if ( y + together < 8)
+                                cube(x, y + together, z) = LED_OFF;
+                            if (y > -1)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++z;
+                        for (int x = 7; x > -1; --x) {
+                            for (int y = 6; y > -together; --y) {
+                                if ( y + together < 8)
+                                    cube(x, y + together, z) = LED_OFF;
+                                if (y > -1)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (parallel == PARALLEL_Z) {
+                for (int x = 0; x < 8; ++x) {
+                    for (int z = 0; z < 8; ++z) {
+                        if (cube(x, 7, z) == LED_OFF)
+                            continue;
+                        for (int y = 6; y > -together; --y) {
+                            if ( y + together < 8)
+                                cube(x, y + together, z) = LED_OFF;
+                            if (y > -1)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++x;
+                        for (int z = 7; z > -1; --z) {
+                            for (int y = 6; y > -together; --y) {
+                                if ( y + together < 8)
+                                    cube(x, y + together, z) = LED_OFF;
+                                if (y > -1)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            } //parallel
+        }//dropDirection
+    } //viewDirection
+
+    else if (viewDirection == Z_ASCEND || viewDirection == Z_DESCEND) {
+        cube.getImageInLayerZ(image, imageCode, viewDirection, rotate);
+        if (dropDirection == Z_ASCEND) {
+            Call(cube.lightLayerZ(0, image));
+            sleepMs(interval1);
+            if (parallel == PARALLEL_X) {
+                for (int y = 0; y < 8; ++y) {
+                    for (int x = 0; x < 8; ++x) {
+                        if (cube(x, y, 0) == LED_OFF)
+                            continue;
+                        for (int z = 1; z < 7 + together; ++z) {
+                            if (z - together > -1)
+                                cube(x, y, z - together) = LED_OFF;
+                            if (z < 8)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++y;
+                        for (int x = 7; x > -1; --x) {
+                            for (int z = 1; z < 7 + together; ++z) {
+                                if (z - together > -1)
+                                    cube(x, y, z - together) = LED_OFF;
+                                if (z < 8)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            }//parallel
+            else if (parallel == PARALLEL_Y) {
+                for (int x = 0; x < 8; ++x) {
+                    for (int y = 0; y < 8; ++y) {
+                        if (cube(x, y, 0) == LED_OFF)
+                            continue;
+                        for (int z = 1; z < 7 + together; ++z) {
+                            if (z - together > -1)
+                                cube(x, y, z - together) = LED_OFF;
+                            if (z < 8)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++x;
+                        for (int y = 7; y > -1; --y) {
+                            for (int z = 1; z < 7 + together; ++z) {
+                                if (z - together > -1)
+                                    cube(x, y, z - together) = LED_OFF;
+                                if (z < 8)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            }//parallel
+        }//dropDirection
+        else if (dropDirection == Z_DESCEND) {
+            Call(cube.lightLayerZ(7, image));
+            sleepMs(interval1);
+            if (parallel == PARALLEL_X) {
+                for (int y = 0; y < 8; ++y) {
+                    for (int x = 0; x < 8; ++x) {
+                        if (cube(x, y, 7) == LED_OFF)
+                            continue;
+                        for (int z = 6; z > -together; --z) {
+                            if (z + together < 8)
+                                cube(x, y, z + together) = LED_OFF;
+                            if (z > -1)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++y;
+                        for (int x = 7; x > -1; --x) {
+                            for (int z = 6; z > -together; --z) {
+                                if (z + together < 8)
+                                    cube(x, y, z + together) = LED_OFF;
+                                if (z > -1)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            }//parallel
+            else if (parallel == PARALLEL_Y) {
+                for (int x = 0; x < 8; ++x) {
+                    for (int y = 0; y < 8; ++y) {
+                        if (cube(x, y, 7) == LED_OFF)
+                            continue;
+                        for (int z = 6; z > -together; --z) {
+                            if (z + together < 8)
+                                cube(x, y, z + together) = LED_OFF;
+                            if (z > -1)
+                                cube(x, y, z) = LED_ON;
+                            cube.update();
+                            sleepMs(interval1);
+                        }
+                    }
+                    if (is_S_Shape) {
+                        ++x;
+                        for (int y = 7; y > -1; --y) {
+                            for (int z = 6; z > -together; --z) {
+                                if (z + together < 8)
+                                    cube(x, y, z + together) = LED_OFF;
+                                if (z > -1)
+                                    cube(x, y, z) = LED_ON;
+                                cube.update();
+                                sleepMs(interval1);
+                            }
+                        }
+                    }
+                }
+            }//parallel
+        }//dropDirection
+
+    }//viewDirection
+
+    sleepMs(interval2);
 }
+
+
+bool DropPointEffect::readFromFP(FILE* fp) {
+    while (!feof(fp)) {
+        char tag1[32] = { 0 };
+        fscanf(fp, "%s", tag1);
+        util::toUpperCase(tag1, strlen(tag1));
+
+        if (strcmp(tag1, "<IMAGESCODE>") == 0) {
+            while (true) {
+                char tag2[32] = { 0 };
+                fscanf(fp, "%s", tag2);
+                util::toUpperCase(tag2, strlen(tag2));
+                if (strcmp(tag2, "<CODE>") == 0) {
+                    char imageCodeStr[32] = { 0 };
+                    fscanf(fp, "%s", imageCodeStr);
+                    int imageCode = ImageLib::getKey(imageCodeStr);
+                    if (imageCode != -1)
+                        imagesCode_.push_back(imageCode);
+                }
+                else if (strcmp(tag2, "<END_IMAGESCODE>") == 0) {
+                    break;
+                }
+                else if (strcmp(tag2, "<END>") ==  0) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        else if (strcmp(tag1, "<EVENTS>") == 0) {
+            while (true) {
+                char tag2[32] = { 0 };
+                fscanf(fp, "%s", tag2);
+                util::toUpperCase(tag2, strlen(tag2));
+                if (strcmp(tag2, "<EVENT>") == 0) {
+                    char viewDirection[12] = { 0 };
+                    char scanDirection[12] = { 0 };
+                    char parallel[12] = { 0 };
+                    char rotate[12] = { 0 };
+                    char is_S_Shape[12] = { 0 };
+                    bool isSShape = false;
+                    int together, interval1, interval2;
+                    fscanf(fp, "%s %s %s %s %s %d %d %d", viewDirection, scanDirection,
+                            parallel, rotate, is_S_Shape, &together, &interval1, &interval2);
+                    if (strcmp(is_S_Shape, "S_SHAPE") == 0)
+                        isSShape = true;
+                    events_.emplace_back(
+                            util::getDirection(viewDirection), util::getDirection(scanDirection),
+                            util::getDirection(parallel), util::getAngle(rotate), isSShape,
+                            together, interval1, interval2);
+                }
+                else if (strcmp(tag2, "<END_EVENTS>") == 0) {
+                    break;
+                }
+                else if (strcmp(tag2, "<END>") == 0) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        else if (strcmp(tag1, "<END>") == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    return true;
+}
+

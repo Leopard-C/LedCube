@@ -1,29 +1,17 @@
 #pragma once
 #include "./effect.h"
-#include "../utility/directions.h"
-#include "../utility/intervals.h"
+#include "./drop_point.h"
 #include <string>
 
 
-class DropTextPointEffect :
-    public Effect,
-    public DirectionsAnglePair,
-    public IntervalsPair
+class DropTextPointEffect : public DropPointEffect
 {
 public:
-    void setString(const std::string& str);
+    void setText(const std::string& str);
 
-    void setRotate(Angle rotate) {
-        rotate_ = rotate;
-    }
-
-protected:
-    virtual void show();
-
-private:
-    void show(Direction direction, Direction subDirection, Angle angle);
+public:
+    virtual bool readFromFP(FILE* fp);
 
 private:
     std::string string_;
-    Angle rotate_ = ANGLE_0;
 };

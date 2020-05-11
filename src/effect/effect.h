@@ -1,6 +1,9 @@
 #pragma once
 #include <chrono>
 #include <thread>
+#include <fstream>
+#include <vector>
+#include <cstring>
 #include "../driver/cube.h"
 
 extern LedCube cube;
@@ -41,6 +44,16 @@ public:
 
 public:
     virtual void show() = 0;
+    virtual bool readFromFP(FILE* fp) { return true; };
+
+    virtual bool readFromFile(const char* filename) {
+        FILE* fp = fopen(filename, "r");
+        if (!fp)
+            return false;
+        bool ret = readFromFP(fp);
+        fclose(fp);
+        return ret;
+    }
 
 protected:
     void sleepUs(int microS) {

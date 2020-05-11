@@ -1,40 +1,50 @@
 #pragma once
 #include "./effect.h"
-#include "../utility/directions.h"
-#include "../utility/intervals.h"
 #include "../utility/image_lib.h"
+#include <vector>
 
 
-class LayerScanEffect :
-    public Effect,
-    public DirectionsAnglePair,
-    public IntervalsPair
+class LayerScanEffect : public Effect
 {
 public:
+    class Event {
+    public:
+        Event(Direction view, Direction scan, Angle r, int together, int interval1, int interval2) :
+                viewDirection(view), scanDirection(scan), rotate(r),
+                interval1(interval1), interval2(interval2) {
+            if (together < 1 || together > 6) {
+                this->together = 1;
+            }
+            else {
+                this->together = together;
+            }
+        }
+        Direction viewDirection;
+        Direction scanDirection;
+        Angle rotate;
+        int together;
+        int interval1;
+        int interval2;
+    };
+
+    void setEvents(const std::vector<Event>& events) {
+        events_ = events;
+    }
+
     void setImagesCode(const std::vector<int>& imagesCodeIn) {
         imagesCode_ = imagesCodeIn;
     }
 
-    void setRotate(Angle rotate) {
-        rotate_ = rotate;
-    }
-
-    void setTogetherLayers(int together) {
-        if (together > 0 && together < 6)
-            together_ = together;
-        else
-            together_ = 1;
-    }
-
 public:
     virtual void show();
+    virtual bool readFromFP(FILE* fp);
 
 private:
-    void show(Direction direction, Direction subDirection, Angle angle);
+    void show(int imageCode, Direction viewDirection, Direction scanDirection,
+            Angle rotate, int together, int interval1, int interval2);
 
-private:
+protected:
     std::vector<int> imagesCode_;
-    Angle rotate_ = ANGLE_0;
-    int together_ = 1;
+    std::vector<Event> events_;
 };
 

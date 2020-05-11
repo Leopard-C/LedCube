@@ -1,212 +1,172 @@
 #include "./layer_scan.h"
 #include "../driver/cube.h"
 #include "../utility/image_lib.h"
+#include "../utility/utils.h"
 #include <algorithm>
 
 extern LedCube cube;
 
 
 void LayerScanEffect::show() {
-    int size = directions_.size();
-    for (int i = 0; i < size; ++i) {
-        show(directions_[i], subDirections_[i], angles_[i]);
+    for (auto& event : events_) {
+        for (auto imageCode : imagesCode_) {
+            show(imageCode, event.viewDirection, event.scanDirection,
+                 event.rotate, event.together, event.interval1, event.interval2);
+        }
     }
 }
 
-void LayerScanEffect::show(Direction direction, Direction subDirection, Angle angle) {
-    for (auto code : imagesCode_) {
-        Call(cube.clear());
-
-        if (code == ' ') {
-            sleepMs(interval2_);
-            continue;
-        }
-
-        LedCube::Array2D_8_8 image;
-
-        switch (direction) {
-        case X_ASCEND:
-            cube.getImageInLayerX(image, code, direction, angle);
-            if (subDirection == X_ASCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerX(i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int x = together_; x < 8; ++x) {
-                    cube.lightLayerX(x - together_, LED_OFF);
-                    cube.setImageInLayerX(x, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            else if (subDirection == X_DESCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerX(7 - i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int x = 7 - together_; x > -1; --x) {
-                    cube.lightLayerX(x + together_, LED_OFF);
-                    cube.setImageInLayerX(x, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            break;
-        case X_DESCEND:
-            cube.getImageInLayerX(image, code, direction, angle);
-            if (subDirection == X_DESCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerX(7 - i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int x = 7 - together_; x > -1; --x) {
-                    cube.lightLayerX(x + together_, LED_OFF);
-                    cube.setImageInLayerX(x, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            else if (subDirection == X_ASCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerX(i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int x = together_; x < 8; ++x) {
-                    cube.lightLayerX(x - together_, LED_OFF);
-                    cube.setImageInLayerX(x, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            break;
-        case Y_ASCEND:
-            cube.getImageInLayerY(image, code, direction, angle);
-            if (subDirection == Y_ASCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerY(i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int y = together_; y < 8; ++y) {
-                    cube.lightLayerY(y - together_, LED_OFF);
-                    cube.setImageInLayerY(y, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            else if (subDirection == Y_DESCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerY(7 - i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int y = 7 - together_; y > -1; --y) {
-                    cube.lightLayerY(y + together_, LED_OFF);
-                    cube.setImageInLayerY(y, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            break;
-        case Y_DESCEND:
-            cube.getImageInLayerY(image, code, direction, angle);
-            if (subDirection == Y_DESCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerY(7 - i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int y = 7 - together_; y > -1; --y) {
-                    cube.lightLayerY(y + together_, LED_OFF);
-                    cube.setImageInLayerY(y, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            else if (subDirection == Y_ASCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerY(i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int y = together_; y < 8; ++y) {
-                    cube.lightLayerY(y - together_, LED_OFF);
-                    cube.setImageInLayerY(y, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            break;
-        case Z_ASCEND:
-            cube.getImageInLayerZ(image, code, direction, angle);
-            if (subDirection == Z_ASCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerZ(i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int z = together_; z < 8; ++z) {
-                    cube.lightLayerZ(z - together_, LED_OFF);
-                    cube.setImageInLayerZ(z, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            else if (subDirection == Z_DESCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerZ(7 - i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int z = 7 - together_; z > -1; --z) {
-                    cube.lightLayerZ(z + together_, LED_OFF);
-                    cube.setImageInLayerZ(z, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            break;
-        case Z_DESCEND:
-            cube.getImageInLayerZ(image, code, direction, angle);
-            if (subDirection == Z_DESCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerZ(7 - i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int z = 7 - together_; z > -1; --z) {
-                    cube.lightLayerZ(z + together_, LED_OFF);
-                    cube.setImageInLayerZ(z, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            else if (subDirection == Z_ASCEND) {
-                for (int i = 0; i < together_; ++i) {
-                    cube.setImageInLayerZ(i, image);
-                }
-                cube.update();
-                sleepMs(interval1_);
-                for (int z = together_; z < 8; ++z) {
-                    cube.lightLayerZ(z - together_, LED_OFF);
-                    cube.setImageInLayerZ(z, image);
-                    cube.update();
-                    sleepMs(interval1_);
-                }
-            }
-            break;
-        default:
-            break;
-        }
-
-        sleepMs(interval2_);
-
-    } // end for code
-
+void LayerScanEffect::show(int imageCode, Direction viewDirection, Direction scanDirection,
+        Angle rotate, int together, int interval1, int interval2)
+{
     Call(cube.clear());
+
+    if (imageCode == ' ') {
+        sleepMs(interval2);
+        return;
+    }
+
+    LedCube::Array2D_8_8 image;
+
+    if (viewDirection == X_ASCEND || viewDirection == X_DESCEND) {
+        cube.getImageInLayerX(image, imageCode, viewDirection, rotate);
+        if (scanDirection == X_ASCEND) {
+            for (int x = 0; x < 7 + together; ++x) {
+                if (x - together > -1)
+                    cube.lightLayerX(x - together, LED_OFF);
+                if (x < 8)
+                    cube.lightLayerX(x, image);
+                cube.update();
+                sleepMs(interval1);
+            }
+        }
+        else if (scanDirection == X_DESCEND) {
+            for (int x = 7; x > -together; --x) {
+                if (x + together < 8)
+                    cube.lightLayerX(x + together, LED_OFF);
+                if (x > -1)
+                    cube.lightLayerX(x, image);
+                cube.update();
+                sleepMs(interval1);
+            }
+        }
+    }
+    else if (viewDirection == Y_ASCEND || viewDirection == Y_DESCEND) {
+        cube.getImageInLayerY(image, imageCode, viewDirection, rotate);
+        if (scanDirection == Y_ASCEND) {
+            for (int y = 0; y < 7 + together; ++y) {
+                if (y - together > -1)
+                    cube.lightLayerY(y - together, LED_OFF);
+                if (y < 8)
+                    cube.lightLayerY(y, image);
+                cube.update();
+                sleepMs(interval1);
+            }
+        } 
+        else if (scanDirection == Y_DESCEND) {
+            for (int y = 7; y > -together; --y) {
+                if (y + together < 8)
+                    cube.lightLayerY(y + together, LED_OFF);
+                if (y > -1)
+                    cube.lightLayerY(y, image);
+                cube.update();
+                sleepMs(interval1);
+            }
+        }
+    }
+    else if (viewDirection == Z_ASCEND || viewDirection == Z_DESCEND) {
+        cube.getImageInLayerZ(image, imageCode, viewDirection, rotate);
+        if (scanDirection == Z_ASCEND) {
+            for (int z = 0; z < 7 + together; ++z) {
+                if (z - together > -1)
+                    cube.lightLayerZ(z - together, LED_OFF);
+                if (z < 8)
+                    cube.lightLayerZ(z, image);
+                cube.update();
+                sleepMs(interval1);
+            }
+        }
+        else if (scanDirection == Z_DESCEND) {
+            for (int z = 7; z > -together; --z) {
+                if (z + together < 8)
+                    cube.lightLayerZ(z + together, LED_OFF);
+                if (z < 8)
+                    cube.lightLayerZ(z, image);
+                cube.update();
+                sleepMs(interval1);
+            }
+        }
+    }
+
+    sleepMs(interval2);
 }
+
+
+bool LayerScanEffect::readFromFP(FILE* fp) {
+    while (!feof(fp)) {
+        char tag1[32] = { 0 };
+        fscanf(fp, "%s", tag1);
+        util::toUpperCase(tag1, strlen(tag1));
+
+        if (strcmp(tag1, "<IMAGESCODE>") == 0) {
+            while (true) {
+                char tag2[32] = { 0 };
+                fscanf(fp, "%s", tag2);
+                util::toUpperCase(tag2, strlen(tag2));
+                if (strcmp(tag2, "<CODE>") == 0) {
+                    char imageCodeStr[32] = { 0 };
+                    fscanf(fp, "%s", imageCodeStr);
+                    int imageCode = ImageLib::getKey(imageCodeStr);
+                    if (imageCode != -1)
+                        imagesCode_.push_back(imageCode);
+                }
+                else if (strcmp(tag2, "<END_IMAGESCODE>") == 0) {
+                    break;
+                }
+                else if (strcmp(tag2, "<END>") ==  0) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        else if (strcmp(tag1, "<EVENTS>") == 0) {
+            while (true) {
+                char tag2[32] = { 0 };
+                fscanf(fp, "%s", tag2);
+                util::toUpperCase(tag2, strlen(tag2));
+                if (strcmp(tag2, "<EVENT>") == 0) {
+                    char viewDirection[12] = { 0 };
+                    char scanDirection[12] = { 0 };
+                    char rotate[12] = { 0 };
+                    int together, interval1, interval2;
+                    fscanf(fp, "%s %s %s %d %d %d", viewDirection, scanDirection,
+                            rotate, &together, &interval1, &interval2);
+                    events_.emplace_back(
+                            util::getDirection(viewDirection), util::getDirection(scanDirection),
+                            util::getAngle(rotate), together, interval1, interval2);
+                }
+                else if (strcmp(tag2, "<END_EVENTS>") == 0) {
+                    break;
+                }
+                else if (strcmp(tag2, "<END>") == 0) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        else if (strcmp(tag1, "<END>") == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 

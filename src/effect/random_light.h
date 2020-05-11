@@ -9,18 +9,40 @@ class RandomLightEffect :
     public Interval
 {
 public:
-    void setCount(int count) {
-        count_ = count;
-    }
+    struct Event {
+        Event(LedState state, int together, int maxNum, int interval1, int interval2) :
+                state(state), interval1(interval1), interval2(interval2)
+        {
+            if (together < 0)
+                this->together = 1;
+            else if (together > 256)
+                this->together = 256;
+            else
+                this->together = together;
 
-    void setStates(const std::vector<int>& states) {
-        states_ = states;
+            if (maxNum < 0)
+                this->maxNum = 1;
+            else if (maxNum > 512)
+                this->maxNum = 512;
+            else
+                this->maxNum = maxNum;
+        }
+        LedState state;
+        char null[3];
+        int together;
+        int maxNum;
+        int interval1;
+        int interval2;
+    };
+
+    void setEvents(const std::vector<Event>& events) {
+        events_ = events;
     }
 
 public:
     virtual void show();
+    virtual bool readFromFP(FILE* fp);
 
 private:
-    int count_ = 256;
-    std::vector<int> states_;
+    std::vector<Event> events_;
 };
