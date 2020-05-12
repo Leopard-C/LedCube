@@ -20,7 +20,7 @@ void CubeSizeFromInnerEffect::show(ChangeType changeType, FillType fillType, int
             sleepMs(interval1);
         }
     }
-    else {
+    else if (changeType == BIG_TO_SMALL) {
         for (int i = 0; i < 4; ++i) {
             cube.clear();
             ext::lightCube({i, i, i}, {7-i, 7-i, 7-i}, fillType);
@@ -44,8 +44,8 @@ bool CubeSizeFromInnerEffect::readFromFP(FILE* fp) {
                 fscanf(fp, "%s", tag2);
                 util::toUpperCase(tag2, strlen(tag2));
                 if (strcmp(tag2, "<EVENT>") == 0) {
-                    char changeType[12] = { 0 };
-                    char fillType[12] = { 0 };
+                    char changeType[16] = { 0 };
+                    char fillType[16] = { 0 };
                     int interval1, interval2;
                     fscanf(fp, "%s %s %d %d", changeType, fillType, &interval1, &interval2);
                     events_.emplace_back(util::getChangeType(changeType),

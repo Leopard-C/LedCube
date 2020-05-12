@@ -29,17 +29,42 @@ enum {
     Image_ExclamationPoint = '!',
 
     // Other text or image (not in ASCII table)
-    Image_Base           = 256
+    Image_Base            = 256,
+
+    Image_Square_Edge_1   = Image_Base + 1,
+    Image_Square_Edge_2   = Image_Base + 2,
+    Image_Square_Edge_3   = Image_Base + 3,
+    Image_Square_Edge_4   = Image_Base + 4,
+
+    Image_Square_Solid_1  = Image_Base + 5,
+    Image_Square_Solid_2  = Image_Base + 6,
+    Image_Square_Solid_3  = Image_Base + 7,
+    Image_Square_Solid_4  = Image_Base + 8,
+
+    Image_Circle_Edge_1   = Image_Base + 9,
+    Image_Circle_Edge_2   = Image_Base + 10,
+    Image_Circle_Edge_3   = Image_Base + 11,
+    Image_Circle_Edge_4   = Image_Base + 12,
+    Image_Circle_Edge_5   = Image_Base + 13,
+
+    Image_Circle_Solid_1  = Image_Base + 14,
+    Image_Circle_Solid_2  = Image_Base + 15,
+    Image_Circle_Solid_3  = Image_Base + 16,
+    Image_Circle_Solid_4  = Image_Base + 17,
+    Image_Circle_Solid_5  = Image_Base + 18,
 };
 
 class ImageLib {
 public:
-    static const std::array<std::array<unsigned char, 8>, 8>& get(int ch);
+    static const std::array<std::array<char, 8>, 8>& get(int ch);
     static bool exist(int key);
+    static bool exist(const std::string& keyStr);
+    static int getKey(const std::string& keyStr);
     static void validate(std::string& str);
 
 public:
-    static std::map<int, std::array<std::array<unsigned char, 8>, 8>> table;
+    static std::map<std::string, int> keyTable;
+    static std::map<int, std::array<std::array<char, 8>, 8>> table;
 };
 
 

@@ -1,8 +1,10 @@
 #include "./cube.h"
 #include "../utility/image_lib.h"
+#include "../utility/utils.h"
 #include <cstring>
 #include <thread>
 #include <chrono>
+#include <vector>
 #include <iostream>
 #include <wiringPi.h>
 
@@ -13,16 +15,11 @@ X74hc154 LedCube::x74hc154[4];
 bool LedCube::isRunning = true;
 bool LedCube::isBackgroundThreadQuit = true;
 std::mutex LedCube::mutex_;
+bool LedCube::setuped = false;
 
 
 LedCube::~LedCube() {
-    isRunning = false;
-    int count = 5;
-    while (!isBackgroundThreadQuit && count-- > 0) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-
-    reset();
+    quit();
 }
 
 void LedCube::setup() {
@@ -44,6 +41,19 @@ void LedCube::setup() {
 
     std::thread t(backgroundThread);
     t.detach();
+
+    setuped = true;
+}
+
+void LedCube::quit() {
+    if (setuped) {
+        isRunning = false;
+        int count = 5;
+        while (!isBackgroundThreadQuit && count-- > 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+        reset();
+    }
 }
 
 void LedCube::update() {
@@ -144,14 +154,13 @@ void LedCube::clear() {
  *      Light on or off a layer
  *
 **************************************************/
-void LedCube::lightLayerX(int x, LedState state) {
-    for (int z = 0; z < 8; ++z) {
+void LedCube::lightLayerZ(int z, LedState state) {
+    for (int x = 0; x < 8; ++x) {
         for (int y = 0; y < 8; ++y) {
             ledsBuff[z][x][y] = state;
         }
     }
 }
-
 
 void LedCube::lightLayerY(int y, LedState state) {
     for (int z = 0; z < 8; ++z) {
@@ -161,14 +170,56 @@ void LedCube::lightLayerY(int y, LedState state) {
     }
 }
 
-
-void LedCube::lightLayerZ(int z, LedState state) {
-    for (int x = 0; x < 8; ++x) {
+void LedCube::lightLayerX(int x, LedState state) {
+    for (int z = 0; z < 8; ++z) {
         for (int y = 0; y < 8; ++y) {
             ledsBuff[z][x][y] = state;
         }
     }
 }
+
+void LedCube::lightLayerZ(int z, int imageCode, Direction viewDirection, Angle rotate) {
+    Array2D_8_8 image;
+    getImageInLayerZ(image, imageCode, viewDirection, rotate);
+    lightLayerZ(z, image);
+}
+
+void LedCube::lightLayerY(int y, int imageCode, Direction viewDirection, Angle rotate) {
+    Array2D_8_8 image;
+    getImageInLayerY(image, imageCode, viewDirection, rotate);
+    lightLayerY(y, image);
+}
+
+void LedCube::lightLayerX(int x, int imageCode, Direction viewDirection, Angle rotate) {
+    Array2D_8_8 image;
+    getImageInLayerX(image, imageCode, viewDirection, rotate);
+    lightLayerX(x, image);
+}
+
+void LedCube::lightLayerZ(int z, const Array2D_8_8& image) {
+    for (int x = 0; x < 8; ++x) {
+        for (int y = 0; y < 8; ++y) {
+            ledsBuff[z][x][y] = image[x][y];
+        }
+    }
+}
+
+void LedCube::lightLayerY(int y, const Array2D_8_8& image) {
+    for (int z = 0; z < 8; ++z) {
+        for (int x = 0; x < 8; ++x) {
+            ledsBuff[z][x][y] = image[z][x];
+        }
+    }
+}
+
+void LedCube::lightLayerX(int x, const Array2D_8_8& image) {
+    for (int z = 0; z < 8; ++z) {
+        for (int y = 0; y < 8; ++y) {
+            ledsBuff[z][x][y] = image[z][y];
+        }
+    }
+}
+
 
 
 /***************************************************
@@ -176,6 +227,7 @@ void LedCube::lightLayerZ(int z, LedState state) {
  *        Light on or off a row
  *
 ***************************************************/
+// the same state
 void LedCube::lightRowXY(int x, int y, LedState state) {
     for (int z = 0; z < 8; ++z) {
         ledsBuff[z][x][y] = state;
@@ -194,58 +246,69 @@ void LedCube::lightRowXZ(int x, int z, LedState state) {
     }
 }
 
+// the same state
+void LedCube::lightRowXY(int x, int y, int zStart, int zEnd, LedState state) {
+    for (int z = zStart; z <= zEnd; ++z) {
+        ledsBuff[z][x][y] = state;
+    }
+}
+
+void LedCube::lightRowYZ(int y, int z, int xStart, int xEnd, LedState state) {
+    for (int x = xStart; x <= xEnd; ++x) {
+        ledsBuff[z][x][y] = state;
+    }
+}
+
+void LedCube::lightRowXZ(int x, int z, int yStart, int yEnd, LedState state) {
+    for (int y = yStart; y <= yEnd; ++y) {
+        ledsBuff[z][x][y] = state;
+    }
+}
+
+// different state
+void LedCube::lightRowXY(int x, int y, const std::array<LedState, 8>& state) {
+    for (int z = 0; z < 8; ++z) {
+        ledsBuff[z][x][y] = state[z];
+    }
+}
+
+void LedCube::lightRowYZ(int y, int z, const std::array<LedState, 8>& state) {
+    for (int x = 0; x < 8; ++x) {
+        ledsBuff[z][x][y] = state[x];
+    }
+}
+
+void LedCube::lightRowXZ(int x, int z, const std::array<LedState, 8>& state) {
+    for (int y = 0; y < 8; ++y) {
+        ledsBuff[z][x][y] = state[y];
+    }
+}
+
 
 /***************************************************
  *
- *      Show Image(including text) in a layer
+ *      Light a line (3D)
  *
 ***************************************************/
-void LedCube::setImageInLayerZ(unsigned char ch, int z, Direction direction, Angle rotate) {
-    Array2D_8_8 image;
-    getImageInLayerZ(image, ch, direction, rotate);
-    setImageInLayerZ(z, image);
-}
 
-void LedCube::setImageInLayerY(unsigned char ch, int y, Direction direction, Angle rotate) {
-    Array2D_8_8 image;
-    getImageInLayerY(image, ch, direction, rotate);
-    setImageInLayerY(y, image);
-}
-
-void LedCube::setImageInLayerX(unsigned char ch, int x, Direction direction, Angle rotate) {
-    Array2D_8_8 image;
-    getImageInLayerX(image, ch, direction, rotate);
-    setImageInLayerX(x, image);
-}
-
-void LedCube::setImageInLayerZ(int z, const Array2D_8_8& image) {
-    for (int x = 0; x < 8; ++x) {
-        for (int y = 0; y < 8; ++y) {
-            ledsBuff[z][x][y] = image[x][y];
-        }
+void LedCube::lightLine(const Coordinate& start, const Coordinate& end, LedState state) {
+    std::vector<Coordinate> line;
+    util::getLine3D(start, end, line);
+    for (auto& point : line) {
+        ledsBuff[point.z][point.x][point.y] = state;
     }
 }
 
-void LedCube::setImageInLayerY(int y, const Array2D_8_8& image) {
-    for (int z = 0; z < 8; ++z) {
-        for (int x = 0; x < 8; ++x) {
-            ledsBuff[z][x][y] = image[z][x];
-        }
-    }
-}
 
-void LedCube::setImageInLayerX(int x, const Array2D_8_8& image) {
-    for (int z = 0; z < 8; ++z) {
-        for (int y = 0; y < 8; ++y) {
-            ledsBuff[z][x][y] = image[z][y];
-        }
-    }
-}
+/***************************************************
+ *
+ *      Get Image(including text) in a layer
+ *
+***************************************************/
+void LedCube::getImageInLayerZ(Array2D_8_8& image, int imageCode, Direction viewDirection, Angle rotate) {
+    auto table = ImageLib::get(imageCode);
 
-void LedCube::getImageInLayerZ(Array2D_8_8& image, unsigned char ch, Direction direction, Angle rotate) {
-    auto table = ImageLib::get(ch);
-
-    if (direction == Z_ASCEND) {
+    if (viewDirection == Z_DESCEND) {
         switch (rotate) {
         case ANGLE_0:
             for (int x = 0; x < 8; ++x) {
@@ -279,7 +342,7 @@ void LedCube::getImageInLayerZ(Array2D_8_8& image, unsigned char ch, Direction d
             break;
         }
     }
-    else if (direction == Z_DESCEND) {
+    else if (viewDirection == Z_ASCEND) {
         switch (rotate) {
         case ANGLE_0:
             for (int x = 0; x < 8; ++x) {
@@ -313,12 +376,19 @@ void LedCube::getImageInLayerZ(Array2D_8_8& image, unsigned char ch, Direction d
             break;
         }
     }
+    else {
+        for (int x = 0; x < 8; ++x) {
+            for (int y = 0; y < 8; ++y) {
+                image[x][y] = LED_OFF;
+            }
+        }
+    }
 }
 
-void LedCube::getImageInLayerY(Array2D_8_8& image, unsigned char ch, Direction direction, Angle rotate) {
-    auto table = ImageLib::get(ch);
+void LedCube::getImageInLayerY(Array2D_8_8& image, int imageCode, Direction viewDirection, Angle rotate) {
+    auto table = ImageLib::get(imageCode);
 
-    if (direction == Y_ASCEND) {
+    if (viewDirection == Y_DESCEND) {
         switch (rotate) {
         case ANGLE_0:
             for (int z = 7; z > -1; --z) {
@@ -352,7 +422,7 @@ void LedCube::getImageInLayerY(Array2D_8_8& image, unsigned char ch, Direction d
             break;
         }
     }
-    else if (direction == Y_DESCEND) {
+    else if (viewDirection == Y_ASCEND) {
         switch (rotate) {
         case ANGLE_0:
             for (int z = 7; z > -1; --z) {
@@ -384,12 +454,19 @@ void LedCube::getImageInLayerY(Array2D_8_8& image, unsigned char ch, Direction d
             break;
         }
     }
+    else {
+        for (int x = 0; x < 8; ++x) {
+            for (int z = 0; z < 8; ++z) {
+                image[z][x] = LED_OFF;
+            }
+        }
+    }
 }
 
-void LedCube::getImageInLayerX(Array2D_8_8& image, unsigned char ch, Direction direction, Angle rotate) {
-    auto table = ImageLib::get(ch);
+void LedCube::getImageInLayerX(Array2D_8_8& image, int imageCode, Direction viewDirection, Angle rotate) {
+    auto table = ImageLib::get(imageCode);
 
-    if (direction == X_ASCEND) {
+    if (viewDirection == X_DESCEND) {
         switch (rotate) {
         case ANGLE_0:
             for (int z = 7; z > -1; --z) {
@@ -423,7 +500,7 @@ void LedCube::getImageInLayerX(Array2D_8_8& image, unsigned char ch, Direction d
             break;
         }
     }
-    else if (direction == X_DESCEND) {
+    else if (viewDirection == X_ASCEND) {
         switch (rotate) {
         case ANGLE_0:
             for (int z = 7; z > -1; --z) {
@@ -455,32 +532,105 @@ void LedCube::getImageInLayerX(Array2D_8_8& image, unsigned char ch, Direction d
             break;
         }
     }
-}
-
-void LedCube::showStringInLayerZ(std::string str, int interval, int z, Direction direction, Angle rotate) {
-    ImageLib::validate(str);
-    for (auto ch : str) {
-        setImageInLayerZ(ch, z, direction, rotate);
-        std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+    else {
+        for (int y = 7; y > -1; --y) {
+            for (int z = 0; z < 8; ++z) {
+                image[z][y] = LED_OFF;
+            }
+        }
     }
 }
 
-void LedCube::showStringInLayerY(std::string str, int interval, int y, Direction direction, Angle rotate) {
+void LedCube::showStringInLayerZ(std::string str, int interval, int z, Direction viewDirection, Angle rotate) {
     ImageLib::validate(str);
     for (auto ch : str) {
-        setImageInLayerY(ch, y, direction, rotate);
-        std::this_thread::sleep_for(std::chrono::milliseconds(interval));
-    }
-}
-
-void LedCube::showStringInLayerX(std::string str, int interval, int x, Direction direction, Angle rotate) {
-    ImageLib::validate(str);
-    for (auto ch : str) {
-        setImageInLayerX(ch, x, direction, rotate);
+        lightLayerZ(ch, z, viewDirection, rotate);
         if (ch == ' ')
             std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
         else
             std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+    }
+}
+
+void LedCube::showStringInLayerY(std::string str, int interval, int y, Direction viewDirection, Angle rotate) {
+    ImageLib::validate(str);
+    for (auto ch : str) {
+        lightLayerY(ch, y, viewDirection, rotate);
+        if (ch == ' ')
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
+        else
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+    }
+}
+
+void LedCube::showStringInLayerX(std::string str, int interval, int x, Direction viewDirection, Angle rotate) {
+    ImageLib::validate(str);
+    for (auto ch : str) {
+        lightLayerX(ch, x, viewDirection, rotate);
+        if (ch == ' ')
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
+        else
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+    }
+}
+
+
+/*********************************
+ *
+ *   Copy (or move) layer
+ *
+**********************************/
+void LedCube::copyLayerX(int xFrom, int xTo, bool clearXFrom) {
+    if (clearXFrom) {
+        for (int y = 0; y < 8; ++y) {
+            for (int z = 0; z < 8; ++z) {
+                ledsBuff[z][xTo][y] = ledsBuff[z][xFrom][y];
+                ledsBuff[z][xFrom][y] = LED_OFF;
+            }
+        }
+    }
+    else {
+        for (int y = 0; y < 8; ++y) {
+            for (int z = 0; z < 8; ++z) {
+                ledsBuff[z][xTo][y] = ledsBuff[z][xFrom][y];
+            }
+        }
+    }
+}
+
+void LedCube::copyLayerY(int yFrom, int yTo, bool clearYFrom) {
+    if (clearYFrom) {
+        for (int x = 0; x < 8; ++x) {
+            for (int z = 0; z < 8; ++z) {
+                ledsBuff[z][x][yTo] = ledsBuff[z][x][yFrom];
+                ledsBuff[z][x][yFrom] = LED_OFF;
+            }
+        }
+    }
+    else {
+        for (int x = 0; x < 8; ++x) {
+            for (int z = 0; z < 8; ++z) {
+                ledsBuff[z][x][yTo] = ledsBuff[z][x][yFrom];
+            }
+        }
+    }
+}
+
+void LedCube::copyLayerZ(int zFrom, int zTo, bool clearZFrom) {
+    if (clearZFrom) {
+        for (int x = 0; x < 8; ++x) {
+            for (int y = 0; y < 8; ++y) {
+                ledsBuff[zTo][x][y] = ledsBuff[zFrom][x][y];
+                ledsBuff[zFrom][x][y] = LED_OFF;
+            }
+        }
+    }
+    else {
+        for (int x = 0; x < 8; ++x) {
+            for (int y = 0; y < 8; ++y) {
+                ledsBuff[zTo][x][y] = ledsBuff[zFrom][x][y];
+            }
+        }
     }
 }
 

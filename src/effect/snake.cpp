@@ -1,31 +1,7 @@
 #include "./snake.h"
 #include "../utility/utils.h"
+#include "../utility/snake.h"
 
-void SnakeEffect::Snake::init(const std::deque<Coordinate>& coords) {
-    this->coords = coords;
-    for (auto& coord : coords)
-        cube(coord) = LED_ON;
-}
-
-void SnakeEffect::Snake::add(const Coordinate& coord) {
-    if (coord.isValid()) {
-        coords.push_front(coord);
-        cube(coord) = LED_ON;
-    }
-}
-
-
-void SnakeEffect::Snake::move(Direction direction, bool removeBack) {
-    if (removeBack) {
-        cube(coords.back()) = LED_OFF;
-        coords.pop_back();
-    }
-    auto newCoord = coords.front().offset(direction, 1);
-    if (newCoord.isValid())  {
-        coords.push_front(newCoord);
-        cube(coords.front()) = LED_ON;
-    }
-}
 
 void SnakeEffect::show() {
     for (auto& event : events_) {
@@ -92,6 +68,8 @@ void SnakeEffect::show(Direction xDirection, Direction yDirection, Direction zDi
         cube.update();
         sleepMs(interval1);
     }
+
+    sleepMs(interval2);
 }
 
 

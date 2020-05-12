@@ -1,13 +1,9 @@
 #pragma once
 #include "effect.h"
-#include "../utility/intervals.h"
 #include <vector>
 
 
-class RandomLightEffect :
-    public Effect,
-    public Interval
-{
+class RandomLightEffect : public Effect {
 public:
     struct Event {
         Event(LedState state, int together, int maxNum, int interval1, int interval2) :

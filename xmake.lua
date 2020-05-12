@@ -8,7 +8,10 @@ target("led_cube")
     -- std=C+=11
     set_languages("c99", "cxx11")
 
+    add_includedirs("src/json")
+
     -- source file
+    add_files("src/*/*/*.cpp")
     add_files("src/*/*.cpp")
     add_files("src/*.cpp")
 

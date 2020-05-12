@@ -1,6 +1,7 @@
 #include "fireworks_from_center.h"
 #include "../driver/cube_extend.h"
 #include "../utility/utils.h"
+#include "../utility/image_lib.h"
 
 
 void FireworksFromCenterEffect::show() {
@@ -32,7 +33,17 @@ void FireworksFromCenterEffect::show(ShapeType shapeType, FillType fillType,
         }
     }
     else if (shapeType == CIRCLE) {
-
+        for (int i = 0; i < 4; ++i) {
+            if (fillType == FILL_EDGE) {
+                cube.lightLayerZ(7, LED_OFF);
+                cube.lightLayerZ(7, Image_Circle_Edge_1 + i, Z_ASCEND, ANGLE_0);
+            }
+            else {
+                cube.lightLayerZ(7, Image_Circle_Solid_1 + i, Z_ASCEND, ANGLE_0);
+            }
+            cube.update();
+            sleepMs(interval2);
+        }
     }
 }
 
