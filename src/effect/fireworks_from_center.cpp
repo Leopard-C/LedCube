@@ -27,7 +27,7 @@ void FireworksFromCenterEffect::show(ShapeType shapeType, FillType fillType,
         for (int i = 0; i < 4; ++i) {
             if (fillType == FILL_EDGE)
                 cube.lightLayerZ(7, LED_OFF);
-            ext::lightSqure({3-i, 3-i, 7}, {4+i, 4+i, 7}, fillType);
+            cube.lightSqure({3-i, 3-i, 7}, {4+i, 4+i, 7}, fillType);
             cube.update();
             sleepMs(interval2);
         }

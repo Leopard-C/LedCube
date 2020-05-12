@@ -111,6 +111,40 @@ public:
     void copyLayerX(int xFrom, int xTo, bool clearXFrom = false);
 
 
+    /*********************************
+     *   Light a cube (cuboid)
+     *   line(A, B) is diagonal line
+    *********************************/
+    using Vertex = Coordinate;
+    void lightCube(const Vertex& A, const Vertex& B, FillType fill);
+
+
+    /*********************************
+     *   Light a square (rectangle)
+     *   line(A, B) is diagonal line
+    *********************************/
+    void lightSqure(const Vertex& A, const Vertex& B, FillType fill);
+    void lightSqureInLayerZ(int z, int minX, int maxX, int minY, int maxY, FillType fill);
+    void lightSqureInLayerY(int y, int minX, int maxX, int minZ, int maxZ, FillType fill);
+    void lightSqureInLayerX(int x, int minY, int maxY, int minZ, int maxZ, FillType fill);
+
+    /*********************************
+     *   Light a circle 
+    *********************************/
+    void lightCircleInLayerX(int x, int diameter, FillType fill);
+    void lightCircleInLayerY(int y, int diameter, FillType fill);
+    void lightCircleInLayerZ(int z, int diameter, FillType fill);
+
+
+    static void setLoopCount(int count) {
+        if (count == 0)
+            loopCount = 150;
+        else if (count < 4)
+            loopCount = 4;
+        else
+            loopCount = count;
+    }
+
 private:
     static void backgroundThread();
     static void reset();
@@ -125,6 +159,7 @@ private:
     static bool isRunning;
     static bool isBackgroundThreadQuit;
     static std::mutex mutex_;
+    static int loopCount;
 
     static bool setuped;
 };

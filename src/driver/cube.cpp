@@ -16,6 +16,7 @@ bool LedCube::isRunning = true;
 bool LedCube::isBackgroundThreadQuit = true;
 std::mutex LedCube::mutex_;
 bool LedCube::setuped = false;
+int LedCube::loopCount = 150;
 
 
 LedCube::~LedCube() {
@@ -113,7 +114,7 @@ void LedCube::backgroundThread() {
                         // shouldn't use:
                         //   std::this_thread::sleep_for(std::chrono::nanoseconds(100));
                         //   even if you want to sleep 1 ns, it will consume 10000+ ns really
-                        for (int i = 0; i < 200; ++i) {
+                        for (int i = 0; i < loopCount; ++i) {
                             //;
                         }
                         x74hc154[idx].enable(false);
@@ -631,6 +632,216 @@ void LedCube::copyLayerZ(int zFrom, int zTo, bool clearZFrom) {
                 ledsBuff[zTo][x][y] = ledsBuff[zFrom][x][y];
             }
         }
+    }
+}
+
+
+/*********************************
+ *   Light a cube (cuboid)
+ *   line(A, B) is diagonal line
+ *********************************/
+void LedCube::lightCube(const Vertex& A, const Vertex& B, FillType fill) {
+    int minX, minY, minZ, maxX, maxY, maxZ;
+    if (A.x > B.x) {
+        maxX = A.x;
+        minX = B.x;
+    } else {
+        maxX = B.x;
+        minX = A.x;
+    }
+
+    if (A.y > B.y) {
+        maxY = A.y;
+        minY = B.y;
+    } else {
+        maxY = B.y;
+        minY = A.y;
+    }
+
+    if (A.z > B.z) {
+        maxZ = A.z;
+        minZ = B.z;
+    } else {
+        maxZ = B.z;
+        minZ = A.z;
+    }
+
+    if (fill == FILL_EDGE) {
+        // parallel to z
+        lightRowXY(minX, minY, minZ, maxZ, LED_ON);
+        lightRowXY(minX, maxY, minZ, maxZ, LED_ON);
+        lightRowXY(maxX, minY, minZ, maxZ, LED_ON);
+        lightRowXY(maxX, maxY, minZ, maxZ, LED_ON);
+        // parallel to y
+        lightRowXZ(minX, minZ, minY + 1, maxY - 1, LED_ON);
+        lightRowXZ(minX, maxZ, minY + 1, maxY - 1, LED_ON);
+        lightRowXZ(maxX, minZ, minY + 1, maxY - 1, LED_ON);
+        lightRowXZ(maxX, maxZ, minY + 1, maxY - 1, LED_ON);
+        // parallel to x
+        lightRowYZ(minY, minZ, minX + 1, maxX - 1, LED_ON);
+        lightRowYZ(minY, maxZ, minX + 1, maxX - 1, LED_ON);
+        lightRowYZ(maxY, minZ, minX + 1, maxX - 1, LED_ON);
+        lightRowYZ(maxY, maxZ, minX + 1, maxX - 1, LED_ON);
+    }
+    else if (fill == FILL_SURFACE) {
+        for (int x = minX; x <= maxX; ++x) {
+            for (int y = minY; y <= minY; ++y) {
+                ledsBuff[minZ][x][y] = LED_ON;
+                ledsBuff[maxZ][x][y] = LED_ON;
+            }
+        }
+        for (int x = minX; x <= maxX; ++x) {
+            for (int z = minZ; z <= maxZ; ++z) {
+                ledsBuff[z][x][minY] = LED_ON;
+                ledsBuff[z][x][maxY] = LED_ON;
+            }
+        }
+        for (int y = minY; y <= maxY; ++y) {
+            for (int z = minZ; z <= maxZ; ++z) {
+                ledsBuff[z][minX][y] = LED_ON;
+                ledsBuff[z][maxX][y] = LED_ON;
+            }
+        }
+    }
+    else if (fill == FILL_SOLID) {
+        for (int x = minX; x <= maxX; ++x) {
+            for (int y = minY; y <= maxY; ++y) {
+                for (int z = minZ; z <= maxZ; ++z) {
+                    ledsBuff[z][x][y] = LED_ON;
+                }
+            }
+        }
+    }
+}
+
+
+/*********************************
+ *   Light a square (rectangle)
+ *   line(A, B) is diagonal line
+*********************************/
+void LedCube::lightSqure(const Vertex& A, const Vertex& B, FillType fill) {
+    int minX, minY, minZ, maxX, maxY, maxZ;
+    if (A.x > B.x) {
+        maxX = A.x;
+        minX = B.x;
+    } else {
+        maxX = B.x;
+        minX = A.x;
+    }
+
+    if (A.y > B.y) {
+        maxY = A.y;
+        minY = B.y;
+    } else {
+        maxY = B.y;
+        minY = A.y;
+    }
+
+    if (A.z > B.z) {
+        maxZ = A.z;
+        minZ = B.z;
+    } else {
+        maxZ = B.z;
+        minZ = A.z;
+    }
+
+    if (A.x == B.x)
+        lightSqureInLayerX(A.x, minY, maxY, minZ, maxZ, fill);
+    else if (A.y == B.y)
+        lightSqureInLayerY(A.y, minX, maxX, minZ, maxZ, fill);
+    else if (A.z == B.z)
+        lightSqureInLayerZ(A.z, minX, maxX, minY, maxY, fill);
+}
+
+
+void LedCube::lightSqureInLayerZ(int z, int minX, int maxX, int minY, int maxY, FillType fill) {
+    if (fill == FILL_EDGE) {
+        for (int x = minX; x <= maxX; ++x) {
+            ledsBuff[z][x][minY] = LED_ON;
+            ledsBuff[z][x][maxY] = LED_ON;
+        }
+        for (int y = minY + 1; y < maxY; ++y) {
+            ledsBuff[z][minX][y] = LED_ON;
+            ledsBuff[z][maxX][y] = LED_ON;
+        }
+    }
+    else {
+        for (int x = minX; x <= maxX; ++x) {
+            for (int y = minY; y <= maxY; ++y) {
+                ledsBuff[z][x][y] = LED_ON;
+            }
+        }
+    }
+}
+
+void LedCube::lightSqureInLayerY(int y, int minX, int maxX, int minZ, int maxZ, FillType fill) {
+    if (fill == FILL_EDGE) {
+        for (int x = minX; x <= maxX; ++x) {
+            ledsBuff[minZ][x][y] = LED_ON;
+            ledsBuff[maxZ][x][y] = LED_ON;
+        }
+        for (int z = minZ + 1; z < maxZ; ++z) {
+            ledsBuff[z][minX][y] = LED_ON;
+            ledsBuff[z][maxX][y] = LED_ON;
+        }
+    }
+    else {
+        for (int x = minX; x <= maxX; ++x) {
+            for (int z = minZ; z <= maxZ; ++z) {
+                ledsBuff[z][x][y] = LED_ON;
+            }
+        }
+    }
+}
+
+void LedCube::lightSqureInLayerX(int x, int minY, int maxY, int minZ, int maxZ, FillType fill) {
+    if (fill == FILL_EDGE) {
+        for (int y = minY; y <= maxY; ++y) {
+            ledsBuff[minZ][x][y] = LED_ON;
+            ledsBuff[maxZ][x][y] = LED_ON;
+        }
+        for (int z = minZ + 1; z < maxZ; ++z) {
+            ledsBuff[z][x][minY] = LED_ON;
+            ledsBuff[z][x][maxY] = LED_ON;
+        }
+    }
+    else {
+        for (int y = minY; y <= maxY; ++y) {
+            for (int z = minZ; z <= maxZ; ++z) {
+                ledsBuff[z][x][y] = LED_ON;
+            }
+        }
+    }
+}
+
+
+/*********************************
+ *   Light a circle 
+*********************************/
+void LedCube::lightCircleInLayerX(int x, int diameter, FillType fill) {
+    if (fill == FILL_EDGE) {
+        lightLayerX(x, Image_Circle_Edge_1 + diameter - 1, X_ASCEND, ANGLE_0);
+    }
+    else if (fill == FILL_SOLID || fill == FILL_SURFACE) {
+        lightLayerX(x, Image_Circle_Solid_1 + diameter - 1, X_ASCEND, ANGLE_0);
+    }
+}
+
+void LedCube::lightCircleInLayerY(int y, int diameter, FillType fill) {
+    if (fill == FILL_EDGE) {
+        lightLayerY(y, Image_Circle_Edge_1 + diameter - 1, Y_ASCEND, ANGLE_0);
+    }
+    else if (fill == FILL_SOLID || fill == FILL_SURFACE) {
+        lightLayerY(y, Image_Circle_Solid_1 + diameter - 1, Y_ASCEND, ANGLE_0);
+    }
+}
+
+void LedCube::lightCircleInLayerZ(int z, int diameter, FillType fill) {
+    if (fill == FILL_EDGE) {
+        lightLayerZ(z, Image_Circle_Edge_1 + diameter - 1, Z_ASCEND, ANGLE_0);
+    }
+    else if (fill == FILL_SOLID || fill == FILL_SURFACE) {
+        lightLayerZ(z, Image_Circle_Solid_1 + diameter - 1, Z_ASCEND, ANGLE_0);
     }
 }
 

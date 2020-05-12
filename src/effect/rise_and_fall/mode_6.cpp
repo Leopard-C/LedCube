@@ -98,6 +98,7 @@ void RiseAndFallMode6Effect::showLayerXorYorZ(Layer layer, int count, int interv
     }
 
     sleepMs(interval2);
+    Call(cube.clear());
 }
 
 void RiseAndFallMode6Effect::showLayerXY(Layer layer, int count, int interval1, int interval2) {
@@ -199,5 +200,6 @@ void RiseAndFallMode6Effect::showLayerXY(Layer layer, int count, int interval1, 
     }
 
     sleepMs(interval2);
+    Call(cube.clear());
 }
 

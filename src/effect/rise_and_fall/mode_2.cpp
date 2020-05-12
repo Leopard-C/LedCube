@@ -9,37 +9,37 @@ void RiseAndFallMode2Effect::rise(int interval) {
     while (true) {
         cube.clear();
         if (zs[0] == 0) {
-            ext::lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
         }
         else if (zs[0] == 1) {
-            ext::lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
             ++zs[1];
         }
         else if (zs[0] == 2) {
-            ext::lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
             ++zs[1];
             ++zs[2];
         }
 
         else if (zs[0] == 8) {
-            ext::lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
             ++zs[1];
             ++zs[2];
             ++zs[3];
         }
         else if (zs[0] == 9) {
-            ext::lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
             ++zs[2];
             ++zs[3];
         }
         else if (zs[0] == 10) {
-            ext::lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
             ++zs[3];
         }
         else if (zs[0] == 11) {
@@ -47,10 +47,10 @@ void RiseAndFallMode2Effect::rise(int interval) {
         }
 
         else {
-            ext::lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
             ++zs[1];
             ++zs[2];
             ++zs[3];
@@ -68,37 +68,37 @@ void RiseAndFallMode2Effect::fall(int interval) {
     while (true) {
         cube.clear();
         if (zs[0] == 7) {
-            ext::lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
         }
         else if (zs[0] == 6) {
-            ext::lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
             --zs[1];
         }
         else if (zs[0] == 5) {
-            ext::lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
             --zs[1];
             --zs[2];
         }
 
         else if (zs[0] == -1) {
-            ext::lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
             --zs[1];
             --zs[2];
             --zs[3];
         }
         else if (zs[0] == -2) {
-            ext::lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
             --zs[2];
             --zs[3];
         }
         else if (zs[0] == -3) {
-            ext::lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
             --zs[3];
         }
         else if (zs[0] == -4) {
@@ -106,10 +106,10 @@ void RiseAndFallMode2Effect::fall(int interval) {
         }
 
         else {
-            ext::lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
-            ext::lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[0], 1, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[1], 2, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[2], 3, FILL_EDGE);
+            cube.lightCircleInLayerZ(zs[3], 4, FILL_EDGE);
             --zs[1];
             --zs[2];
             --zs[3];

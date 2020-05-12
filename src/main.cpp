@@ -39,9 +39,13 @@
 #include "effect/snake.h"
 #include "effect/random_height.h"
 #include "effect/fireworks_from_center.h"
+#include "effect/breath_cube.h"
 #include "effect/wander_edge.h"
+#include "effect/wander_edge_join.h"
+#include "effect/wander_edge_join_auto_inc.h"
 
 LedCube cube;
+
 
 void sleepMs(int ms) {
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
@@ -78,6 +82,8 @@ int main(int argc, char** argv) {
 
     // must setup after wiringPiSetupGpio() !
     cube.setup();
+
+    sleepMs(5000);
 
     if (strcmp(argv[1], "run" ) == 0) {
         if (argc != 3) {
@@ -334,6 +340,36 @@ int run(const char* effectDescFile) {
                 WanderEdgeEffect wanderEdge;
                 if (wanderEdge.readFromFP(fp))
                     wanderEdge.showOnce();
+                else {
+                    ret = 1;
+                    break;
+                }
+            }
+
+            else if (strcmp(tag, "<WANDEREDGEJOIN>") == 0) {
+                WanderEdgeJoinEffect wanderEdgeJoin;
+                if (wanderEdgeJoin.readFromFP(fp))
+                    wanderEdgeJoin.showOnce();
+                else {
+                    ret = 1;
+                    break;
+                }
+            }
+
+            else if (strcmp(tag, "<WANDEREDGEJOINAUTOINC>") == 0) {
+                WanderEdgeJoinAutoIncEffect wanderEdgeJoinAutoInc;
+                if (wanderEdgeJoinAutoInc.readFromFP(fp))
+                    wanderEdgeJoinAutoInc.showOnce();
+                else {
+                    ret = 1;
+                    break;
+                }
+            }
+
+            else if (strcmp(tag, "<BREATHCUBE>") == 0) {
+                BreathCubeEffect breathCube;
+                if (breathCube.readFromFP(fp))
+                    breathCube.showOnce();
                 else {
                     ret = 1;
                     break;

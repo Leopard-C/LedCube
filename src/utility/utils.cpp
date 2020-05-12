@@ -209,6 +209,11 @@ Layer getLayer(std::string layerStr) {
         return it->second;
 }
 
+Direction reverseDirection(Direction input) {
+    return Direction(-1 * input);
+}
+
+
 
 // Generating points on a 3-D line
 // using Bresenham's Algorithm

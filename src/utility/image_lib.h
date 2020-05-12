@@ -52,6 +52,10 @@ enum {
     Image_Circle_Solid_3  = Image_Base + 16,
     Image_Circle_Solid_4  = Image_Base + 17,
     Image_Circle_Solid_5  = Image_Base + 18,
+
+    Image_Like        = Image_Base + 30,
+    Image_Coin        = Image_Base + 31,
+    Image_Collection  = Image_Base + 32,
 };
 
 class ImageLib {

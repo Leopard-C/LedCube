@@ -8,13 +8,13 @@ enum LED_State:char {
 };
 
 enum Direction {
-    DIR_ERROR = -1,
-    X_ASCEND  = 0,
-    X_DESCEND = 1,
+    DIR_ERROR = 0,
+    X_ASCEND  = 1,
+    X_DESCEND = -1,
     Y_ASCEND  = 2,
-    Y_DESCEND = 3,
-    Z_ASCEND  = 4,
-    Z_DESCEND = 5,
+    Y_DESCEND = -2,
+    Z_ASCEND  = 3,
+    Z_DESCEND = -3,
 
     PARALLEL_X = 10,
     PARALLEL_Y = 11,

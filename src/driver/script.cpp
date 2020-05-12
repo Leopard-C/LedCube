@@ -207,7 +207,7 @@ bool Script::cmdSquare(std::stringstream& ssLine) {
     ssLine >> coord1.x >> coord1.y >> coord1.z
         >> coord2.x >> coord2.y >> coord2.z
         >> fillType;
-    ext::lightSqure(coord1, coord2, util::getFillType(fillType));
+    cube.lightSqure(coord1, coord2, util::getFillType(fillType));
     return true;
 }
 
@@ -217,7 +217,7 @@ bool Script::cmdCube(std::stringstream& ssLine) {
     ssLine >> coord1.x >> coord1.y >> coord1.z
         >> coord2.x >> coord2.y >> coord2.z
         >> fillType;
-    ext::lightCube(coord1, coord2, util::getFillType(fillType));
+    cube.lightCube(coord1, coord2, util::getFillType(fillType));
     return true;
 }
 

@@ -15,7 +15,7 @@ void CubeSizeFromInnerEffect::show(ChangeType changeType, FillType fillType, int
     if (changeType == SMALL_TO_BIG) {
         for (int i = 0; i < 4; ++i) {
             cube.clear();
-            ext::lightCube({3-i, 3-i, 3-i}, {4+i, 4+i, 4+i}, fillType);
+            cube.lightCube({3-i, 3-i, 3-i}, {4+i, 4+i, 4+i}, fillType);
             cube.update();
             sleepMs(interval1);
         }
@@ -23,7 +23,7 @@ void CubeSizeFromInnerEffect::show(ChangeType changeType, FillType fillType, int
     else if (changeType == BIG_TO_SMALL) {
         for (int i = 0; i < 4; ++i) {
             cube.clear();
-            ext::lightCube({i, i, i}, {7-i, 7-i, 7-i}, fillType);
+            cube.lightCube({i, i, i}, {7-i, 7-i, 7-i}, fillType);
             cube.update();
             sleepMs(interval1);
         }
@@ -72,6 +72,4 @@ bool CubeSizeFromInnerEffect::readFromFP(FILE* fp) {
 
     return true;
 }
-
-
 

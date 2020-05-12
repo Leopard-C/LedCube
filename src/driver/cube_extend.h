@@ -6,9 +6,6 @@ namespace ext {
 
 using Vertex = Coordinate;
 
-void lightCube(const Vertex& A, const Vertex& B, FillType fill);
-void lightSqure(const Vertex& A, const Vertex& B, FillType fill);
-
 void lightCircleInLayerX(int x, int diameter, FillType fill);
 void lightCircleInLayerY(int y, int diameter, FillType fill);
 void lightCircleInLayerZ(int z, int diameter, FillType fill);

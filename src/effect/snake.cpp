@@ -56,16 +56,22 @@ void SnakeEffect::show(Direction xDirection, Direction yDirection, Direction zDi
         }
     }
 
-    cube.update();
+    snake.update();
+
     sleepMs(interval1);
     for (int i = 0; i < length - 1; ++i) {
         snake.move(directions[i % 3], false);
-        cube.update();
+        snake.update();
         sleepMs(interval1);
     }
-    for (int i = length - 1; i < 21 + length; ++i) {
+    for (int i = length - 1; i < 21; ++i) {
         snake.move(directions[i % 3]);
-        cube.update();
+        snake.update();
+        sleepMs(interval1);
+    }
+    for (int i = 21; i < 21 + length; ++i) {
+        snake.removeBack();
+        snake.update();
         sleepMs(interval1);
     }
 

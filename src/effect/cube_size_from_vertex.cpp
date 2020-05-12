@@ -28,7 +28,7 @@ void CubeSizeFromVertexEffect::show(Direction xDirection, Direction yDirection, 
                 }
                 for (int i = 0; i < 8; ++i) {
                     cube.clear();
-                    ext::lightCube(fixVertex, {i, i, i}, fillType);
+                    cube.lightCube(fixVertex, {i, i, i}, fillType);
                     cube.update();
                     sleepMs(interval1);
                 }
@@ -42,7 +42,7 @@ void CubeSizeFromVertexEffect::show(Direction xDirection, Direction yDirection, 
                 }
                 for (int i = 0; i < 8; ++i) {
                     cube.clear();
-                    ext::lightCube(fixVertex, {i, i, 7-i}, fillType);
+                    cube.lightCube(fixVertex, {i, i, 7-i}, fillType);
                     cube.update();
                     sleepMs(interval1);
                 }
@@ -58,7 +58,7 @@ void CubeSizeFromVertexEffect::show(Direction xDirection, Direction yDirection, 
                 }
                 for (int i = 0; i < 8; ++i) {
                     cube.clear();
-                    ext::lightCube(fixVertex, {i, 7-i, i}, fillType);
+                    cube.lightCube(fixVertex, {i, 7-i, i}, fillType);
                     cube.update();
                     sleepMs(interval1);
                 }
@@ -72,7 +72,7 @@ void CubeSizeFromVertexEffect::show(Direction xDirection, Direction yDirection, 
                 }
                 for (int i = 0; i < 8; ++i) {
                     cube.clear();
-                    ext::lightCube(fixVertex, {i, 7-i, 7-i}, fillType);
+                    cube.lightCube(fixVertex, {i, 7-i, 7-i}, fillType);
                     cube.update();
                     sleepMs(interval1);
                 }
@@ -90,7 +90,7 @@ void CubeSizeFromVertexEffect::show(Direction xDirection, Direction yDirection, 
                         fixVertex = { 0, 7, 7 };
                     }
                     cube.clear();
-                    ext::lightCube(fixVertex, {7-i, i, i}, fillType);
+                    cube.lightCube(fixVertex, {7-i, i, i}, fillType);
                     cube.update();
                     sleepMs(interval1);
                 }
@@ -104,7 +104,7 @@ void CubeSizeFromVertexEffect::show(Direction xDirection, Direction yDirection, 
                 }
                 for (int i = 0; i < 8; ++i) {
                     cube.clear();
-                    ext::lightCube(fixVertex, {7-i, i, 7-i}, fillType);
+                    cube.lightCube(fixVertex, {7-i, i, 7-i}, fillType);
                     cube.update();
                     sleepMs(interval1);
                 }
@@ -120,7 +120,7 @@ void CubeSizeFromVertexEffect::show(Direction xDirection, Direction yDirection, 
                 }
                 for (int i = 0; i < 8; ++i) {
                     cube.clear();
-                    ext::lightCube(fixVertex, {7-i, 7-i, i}, fillType);
+                    cube.lightCube(fixVertex, {7-i, 7-i, i}, fillType);
                     cube.update();
                     sleepMs(interval1);
                 }
@@ -134,7 +134,7 @@ void CubeSizeFromVertexEffect::show(Direction xDirection, Direction yDirection, 
                 }
                 for (int i = 0; i < 8; ++i) {
                     cube.clear();
-                    ext::lightCube(fixVertex, {7-i, 7-i, 7-i}, fillType);
+                    cube.lightCube(fixVertex, {7-i, 7-i, 7-i}, fillType);
                     cube.update();
                     sleepMs(interval1);
                 }

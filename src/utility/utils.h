@@ -41,6 +41,8 @@ namespace util
     ShapeType getShape(std::string shape);
     Layer getLayer(std::string layer);
 
+    Direction reverseDirection(Direction input);
+
     void getLine3D(const Coordinate& start, const Coordinate end, std::vector<Coordinate>& line);
 
 } // namespace util

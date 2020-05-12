@@ -108,6 +108,7 @@ void RiseAndFallMode3Effect::show(Layer layer, int param, int count, int interva
     }
 
     sleepMs(interval2);
+    Call(cube.clear());
 }
 
 

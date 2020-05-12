@@ -10,6 +10,8 @@ void WanderEdgeEffect::show() {
 }
 
 void WanderEdgeEffect::show(int together, int maxVertexCount, int interval1, int interval2) {
+    Call(cube.clear());
+
     Snake snake;
     Direction currDirection = X_ASCEND;
     Direction candidate[2];
@@ -53,10 +55,12 @@ void WanderEdgeEffect::show(int together, int maxVertexCount, int interval1, int
         }
 
         snake.move(currDirection);
+        snake.update();
         sleepMs(interval1);
     }
 
     sleepMs(interval2);
+    Call(cube.clear());
 }
 
 
