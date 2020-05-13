@@ -1,22 +1,24 @@
+/********************************************************************/
+/*                                                                  */
+/*      Class:  LedCube                                             */
+/*      Desc:   Drive the led cube, including many methods          */
+/*                Get usage and more information from GitHUb.       */
+/*      GitHub: Leopard-C/LedCube                                   */
+/*      Email:  leopard.c@outlook.com                               */
+/*                                                                  */
+/*                                                                  */
+/********************************************************************/
 #pragma once
-
 #include "./x_74hc154.h"
 #include "../utility/enum.h"
 #include "../utility/coordinate.h"
 #include <mutex>
 #include <array>
-#include <iostream>
 
 #define Call(x) (x); LedCube::update();
 
 using LedState = char;
 
-
-/*******************************************************/
-/*                                                     */
-/*                   class: LedCube                    */
-/*                                                     */
-/*******************************************************/
 
 class LedCube {
 public:
@@ -39,10 +41,15 @@ public:
     *********************************************/
     static void quit();
 
-    /****************************
+    /**********************************
      *     Light off All LEDs
-    ****************************/
+    **********************************/
     static void clear();
+
+    /*********************************
+     *     Reset to initial state
+    *********************************/
+    static void reset();
 
 
     /****************************
@@ -98,35 +105,34 @@ public:
     void getImageInLayerY(Array2D_8_8& image, int imageCode, Direction viewDirection = Y_DESCEND, Angle rotate = ANGLE_0);
     void getImageInLayerX(Array2D_8_8& image, int imageCode, Direction viewDirection = X_DESCEND, Angle rotate = ANGLE_0);
 
-    void showStringInLayerZ(std::string str, int interval, int z, Direction viewDirection = Z_DESCEND, Angle rotate = ANGLE_0);
-    void showStringInLayerY(std::string str, int interval, int y, Direction viewDirection = Y_DESCEND, Angle rotate = ANGLE_0);
-    void showStringInLayerX(std::string str, int interval, int x, Direction viewDirection = X_DESCEND, Angle rotate = ANGLE_0);
 
-
-    /*********************************
+    /******************************************
      *   Copy (or move) layer
-    *********************************/
+     *     copy: set clearZFrom to false
+     *     move: set clearZFrom to true
+    ******************************************/
     void copyLayerZ(int zFrom, int zTo, bool clearZFrom = false);
     void copyLayerY(int yFrom, int yTo, bool clearYFrom = false);
     void copyLayerX(int xFrom, int xTo, bool clearXFrom = false);
 
 
-    /*********************************
+    /******************************************
      *   Light a cube (cuboid)
-     *   line(A, B) is diagonal line
-    *********************************/
+     *     line(A, B) is diagonal line
+    ******************************************/
     using Vertex = Coordinate;
     void lightCube(const Vertex& A, const Vertex& B, FillType fill);
 
 
-    /*********************************
+    /******************************************
      *   Light a square (rectangle)
-     *   line(A, B) is diagonal line
-    *********************************/
+     *     line(A, B) is diagonal line
+    ******************************************/
     void lightSqure(const Vertex& A, const Vertex& B, FillType fill);
     void lightSqureInLayerZ(int z, int minX, int maxX, int minY, int maxY, FillType fill);
     void lightSqureInLayerY(int y, int minX, int maxX, int minZ, int maxZ, FillType fill);
     void lightSqureInLayerX(int x, int minY, int maxY, int minZ, int maxZ, FillType fill);
+
 
     /*********************************
      *   Light a circle 
@@ -136,18 +142,25 @@ public:
     void lightCircleInLayerZ(int z, int diameter, FillType fill);
 
 
+    /***********************************************************
+     *   Influence:
+     *      ==> the refresh frequence
+     *      ==> the luminance of each led  ( ! ! ! )
+     *   The smaller the count, the brighter of the LEDs
+    ************************************************************/
+    enum { DefaultLoopCount = 150 };
     static void setLoopCount(int count) {
         if (count == 0)
-            loopCount = 150;
+            loopCount = DefaultLoopCount;
         else if (count < 4)
             loopCount = 4;
         else
             loopCount = count;
     }
 
+
 private:
     static void backgroundThread();
-    static void reset();
 
 private:
     static int vcc[8];
@@ -159,8 +172,8 @@ private:
     static bool isRunning;
     static bool isBackgroundThreadQuit;
     static std::mutex mutex_;
-    static int loopCount;
-
     static bool setuped;
+
+    static int loopCount;
 };
 

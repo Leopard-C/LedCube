@@ -67,3 +67,4 @@ private:
     int directionIdx = -1;
     std::vector<Direction> directions_;
 };
+

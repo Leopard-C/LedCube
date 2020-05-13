@@ -1,8 +1,5 @@
 #include "./layer_scan.h"
-#include "../driver/cube.h"
 #include "../utility/image_lib.h"
-#include "../utility/utils.h"
-#include <algorithm>
 
 extern LedCube cube;
 
@@ -168,5 +165,4 @@ bool LayerScanEffect::readFromFP(FILE* fp) {
 
     return true;
 }
-
 

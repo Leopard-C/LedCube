@@ -1,6 +1,9 @@
 #include "cube_extend.h"
 #include "../utility/ExpressionEvaluator.h"
 #include "../utility/image_lib.h"
+#include <iostream>
+#include <thread>
+#include <chrono>
 
 extern LedCube cube;
 
@@ -52,6 +55,48 @@ void getFrameOfFunction(std::string func, char leds[][8][8]) {
     }
 
     cube.update();
+}
+
+
+/******************************************
+ *
+ *  Show string in a layer
+ *  
+******************************************/
+void showStringInLayerZ(std::string str, int interval, int z, Direction viewDirection, Angle rotate) {
+    ImageLib::validate(str);
+    for (auto ch : str) {
+        cube.lightLayerZ(ch, z, viewDirection, rotate);
+        cube.update();
+        if (ch == ' ')
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
+        else
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+    }
+}
+
+void showStringInLayerY(std::string str, int interval, int y, Direction viewDirection, Angle rotate) {
+    ImageLib::validate(str);
+    for (auto ch : str) {
+        cube.lightLayerY(ch, y, viewDirection, rotate);
+        cube.update();
+        if (ch == ' ')
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
+        else
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+    }
+}
+
+void showStringInLayerX(std::string str, int interval, int x, Direction viewDirection, Angle rotate) {
+    ImageLib::validate(str);
+    for (auto ch : str) {
+        cube.lightLayerX(ch, x, viewDirection, rotate);
+        cube.update();
+        if (ch == ' ')
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
+        else
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+    }
 }
 
 

@@ -6,6 +6,7 @@
 struct Coordinate {
     Coordinate(int x = 0, int y = 0, int z = 0) :
         x(x), y(y), z(z) {}
+
     Coordinate getOffset(Direction direction, int val) const {
         switch (direction) {
             case X_ASCEND:  return { x + val, y, z };
@@ -17,19 +18,23 @@ struct Coordinate {
             default: return { x, y, z };
         }
     }
+
     void offset(Direction direction, int val) {
         switch (direction) {
-            case X_ASCEND:  x += val;
-            case X_DESCEND: x -= val;
-            case Y_ASCEND:  y += val;
-            case Y_DESCEND: y -= val;
-            case Z_ASCEND:  z += val;
-            case Z_DESCEND: z -= val;
+            case X_ASCEND:  x += val; break;
+            case X_DESCEND: x -= val; break;
+            case Y_ASCEND:  y += val; break;
+            case Y_DESCEND: y -= val; break;
+            case Z_ASCEND:  z += val; break;
+            case Z_DESCEND: z -= val; break;
+            default: break;
         }
     }
+
     bool isValid() const { 
         return x > -1 && x < 8 && y > -1 && y < 8 && z > -1 && z < 8;
     }
+
     int x;
     int y;
     int z;
@@ -40,3 +45,4 @@ inline std::ostream& operator<<(std::ostream& os, const Coordinate& coord) {
     os << "(" << coord.x << ", " << coord.y << ", " << coord.z << ")";
     return os;
 }
+

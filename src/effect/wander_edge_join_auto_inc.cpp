@@ -1,6 +1,5 @@
 #include "./wander_edge_join_auto_inc.h"
 #include "../utility/snake.h"
-#include "../utility/utils.h"
 
 
 void WanderEdgeJoinAutoIncEffect::show() {
@@ -29,7 +28,7 @@ void WanderEdgeJoinAutoIncEffect::show(Direction xDirection, Direction yDirectio
     });
 
 
-    bool inValid = false;;
+    bool invalid = false;;
 
     if (xDirection == X_ASCEND) {
         if (yDirection == Y_ASCEND) {
@@ -40,7 +39,7 @@ void WanderEdgeJoinAutoIncEffect::show(Direction xDirection, Direction yDirectio
                 snake1.add(0, 0, 7);
                 snake2.add(0, 0, 7);
             } else {
-                inValid = true;
+                invalid = true;
             }
         } else if (yDirection == Y_DESCEND) {
             if (zDirection == Z_ASCEND) {
@@ -50,10 +49,10 @@ void WanderEdgeJoinAutoIncEffect::show(Direction xDirection, Direction yDirectio
                 snake1.add(0, 7, 7);
                 snake2.add(0, 7, 7);
             } else {
-                inValid = true;
+                invalid = true;
             }
         } else {
-            inValid = true;
+            invalid = true;
         }
     }
     else if (xDirection == X_DESCEND) {
@@ -65,7 +64,7 @@ void WanderEdgeJoinAutoIncEffect::show(Direction xDirection, Direction yDirectio
                 snake1.add(7, 0, 7);
                 snake2.add(7, 0, 7);
             } else {
-                inValid = true;
+                invalid = true;
             }
         } else if (yDirection == Y_DESCEND) {
             if (zDirection == Z_ASCEND) {
@@ -75,21 +74,20 @@ void WanderEdgeJoinAutoIncEffect::show(Direction xDirection, Direction yDirectio
                 snake1.add(7, 7, 7);
                 snake2.add(7, 7, 7);
             } else {
-                inValid = true;
+                invalid = true;
             }
         } else {
-            inValid = true;
+            invalid = true;
         }
     }
     else {
-        inValid = true;
+        invalid = true;
     }
 
-    if (inValid) {
+    if (invalid) {
         sleepMs(interval2);
         return;
     }
-
 
     while (true) {
         int ret1 = snake1.move();
@@ -155,5 +153,4 @@ bool WanderEdgeJoinAutoIncEffect::readFromFP(FILE* fp) {
 
     return true;
 }
-
 

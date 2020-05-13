@@ -1,6 +1,5 @@
 #include "./wander_edge_join.h"
 #include "../utility/snake.h"
-#include "../utility/utils.h"
 
 
 void WanderEdgeJoinEffect::show() {
@@ -91,7 +90,6 @@ void WanderEdgeJoinEffect::show(Direction xDirection, Direction yDirection, Dire
         sleepMs(interval2);
         return;
     }
-
 
     while (true) {
         int ret1 = snake1.smartMove();

@@ -13,7 +13,6 @@ private:
 
 private:
     int pinA, pinB, pinC, pinD;
-    int* last_input;
-    int pinG;
+    int pinG;   // for enable
 };
 

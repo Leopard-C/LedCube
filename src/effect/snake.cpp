@@ -1,5 +1,4 @@
 #include "./snake.h"
-#include "../utility/utils.h"
 #include "../utility/snake.h"
 
 
@@ -14,9 +13,9 @@ void SnakeEffect::show() {
 void SnakeEffect::show(Direction xDirection, Direction yDirection, Direction zDirection,
         int length, int interval1, int interval2)
 {
-    using Vertex = Coordinate;
-    Snake snake;
+    Call(cube.clear());
 
+    Snake snake;
     Direction directions[3] = { xDirection, yDirection, zDirection };
 
     if (xDirection == X_ASCEND) {
@@ -57,8 +56,8 @@ void SnakeEffect::show(Direction xDirection, Direction yDirection, Direction zDi
     }
 
     snake.update();
-
     sleepMs(interval1);
+
     for (int i = 0; i < length - 1; ++i) {
         snake.move(directions[i % 3], false);
         snake.update();
@@ -126,5 +125,4 @@ bool SnakeEffect::readFromFP(FILE* fp) {
 
     return true;
 }
-
 

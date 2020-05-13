@@ -1,9 +1,8 @@
 #pragma once
 #include "./effect.h"
-#include <vector>
 
-class DropLineEffect : public Effect
-{
+
+class DropLineEffect : public Effect {
 public:
     struct Event {
         Event(Direction view, Direction drop, Direction parallel, Angle rotate,
@@ -46,3 +45,4 @@ private:
     std::vector<int> imagesCode_;
     std::vector<Event> events_;
 };
+

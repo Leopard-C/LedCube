@@ -1,7 +1,5 @@
 #pragma once
 #include "./effect.h"
-#include "../utility/image_lib.h"
-#include <vector>
 
 
 class LayerScanEffect : public Effect

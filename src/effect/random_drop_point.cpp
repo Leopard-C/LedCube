@@ -1,5 +1,4 @@
 #include "random_drop_point.h"
-#include "../utility/utils.h"
 #include "../utility/image_lib.h"
 
 
@@ -197,9 +196,9 @@ bool RandomDropPointEffect::readFromFP(FILE* fp) {
                 fscanf(fp, "%s", tag2);
                 util::toUpperCase(tag2, strlen(tag2));
                 if (strcmp(tag2, "<EVENT>") == 0) {
-                    char viewDirection[12] = { 0 };
-                    char scanDirection[12] = { 0 };
-                    char rotate[12] = { 0 };
+                    char viewDirection[16] = { 0 };
+                    char scanDirection[16] = { 0 };
+                    char rotate[16] = { 0 };
                     int togetherView, togetherScan, interval1, interval2;
                     fscanf(fp, "%s %s %s %d %d %d %d", viewDirection, scanDirection,
                             rotate, &togetherView, &togetherScan, &interval1, &interval2);

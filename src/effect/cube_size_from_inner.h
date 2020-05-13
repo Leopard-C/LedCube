@@ -1,6 +1,5 @@
 #include "./effect.h"
 #include "../driver/cube_extend.h"
-#include <vector>
 
 
 class CubeSizeFromInnerEffect : public Effect
@@ -29,3 +28,4 @@ public:
 private:
     std::vector<Event> events_;
 };
+

@@ -1,7 +1,6 @@
 #pragma once
 #include "./effect.h"
 #include "../driver/cube_extend.h"
-#include <vector>
 
 
 class CubeSizeFromVertexEffect : public Effect
@@ -37,5 +36,4 @@ public:
 private:
     std::vector<Event> events_;
 };
-
 

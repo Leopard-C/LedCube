@@ -1,6 +1,5 @@
 #include "./cube_size_from_inner.h"
 #include "../driver/cube_extend.h"
-#include "../utility/utils.h"
 
 
 void CubeSizeFromInnerEffect::show() {

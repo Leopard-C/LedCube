@@ -1,6 +1,7 @@
 #pragma once
 #include "./effect.h"
 
+
 class RandomHeightEffect : public Effect {
 public:
     struct Event {
@@ -21,9 +22,10 @@ public:
     virtual void show();
     virtual bool readFromFP(FILE* fp);
 
-private:
+public:
     void show(int together, ShapeType shape, int duration, int interval1, int interval2);
 
 private:
     std::vector<Event> events_;
 };
+

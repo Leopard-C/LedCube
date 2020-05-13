@@ -1,6 +1,5 @@
 #include "./wander_edge.h"
 #include "../utility/snake.h"
-#include "../utility/utils.h"
 
 
 void WanderEdgeEffect::show() {

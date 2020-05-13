@@ -4,12 +4,11 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <string>
 #include <chrono>
 #include <thread>
-#include <set>
 
 extern LedCube cube;
+
 
 std::set<std::string> Script::cmds = {
     "lightOn", "lightOff", "sleepMs", "update", "clear",
@@ -232,6 +231,7 @@ void Script::getRange(const std::string& str, int& start, int& end) {
     }
 }
 
+
 void Script::getArray(const std::string& str, char state, std::array<char, 8>& states) {
     int start, end;
     getRange(str, start, end);
@@ -253,5 +253,4 @@ bool Script::getArray(const std::string& str, std::array<char, 8>& states) {
     }
     return true;
 }
-
 

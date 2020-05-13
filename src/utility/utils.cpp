@@ -1,6 +1,5 @@
 #include "utils.h"
 #include <map>
-
 #include <algorithm>
 
 namespace util {
@@ -51,6 +50,7 @@ std::vector<int> getRandomArray(int count, int all) {
     return std::vector<int>(vec.begin(), vec.begin() + count);
 }
 
+
 static void toBinary(unsigned char c, std::array<char, 8>& bin) {
     for (int i = 0; i < 8; ++i)
         bin[i] = 0;
@@ -66,7 +66,16 @@ static void toBinary(unsigned char c, std::array<char, 8>& bin) {
     std::reverse(bin.begin(), bin.end());
 }
 
-// { 0xff, 0x00, 0x01, ... } ==> { 1, 1, 1, ... }
+//
+// { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }
+//      ====>
+// {
+//   { 1, 1, 1, 1, 1, 1, 1, 1 }
+//   { 1, 1, 1, 1, 1, 1, 1, 1 }
+//   { 1, 1, 1, 1, 1, 1, 1, 1 }
+//   ...
+// }
+//
 std::array<std::array<char, 8>, 8> toBinary(const std::array<unsigned char, 8>& arr) {
     std::array<std::array<char, 8>, 8> retBin;
     for (int i = 0; i < 8; ++i) {
@@ -75,6 +84,8 @@ std::array<std::array<char, 8>, 8> toBinary(const std::array<unsigned char, 8>& 
     return retBin;
 }
 
+
+// Get the column of an image
 std::array<char, 8> getCol(const std::array<std::array<char, 8>, 8>& image, int col, bool reverse) {
     std::array<char, 8> colArr;
     if (reverse) {
@@ -89,6 +100,7 @@ std::array<char, 8> getCol(const std::array<std::array<char, 8>, 8>& image, int 
     }
     return colArr;
 }
+
 
 static const std::map<std::string, Direction> directionStrMap = {
     { "X_ASCEND", X_ASCEND },
@@ -172,7 +184,6 @@ Angle getAngle(std::string angleStr) {
         return it->second;
 }
 
-
 ChangeType getChangeType(std::string changeTypeStr) {
     toUpperCase(changeTypeStr);
     auto it = changeTypeStrMap.find(changeTypeStr);
@@ -209,10 +220,10 @@ Layer getLayer(std::string layerStr) {
         return it->second;
 }
 
+
 Direction reverseDirection(Direction input) {
     return Direction(-1 * input);
 }
-
 
 
 // Generating points on a 3-D line
@@ -315,3 +326,4 @@ void getLine3D(const Coordinate& start, const Coordinate end, std::vector<Coordi
 
 
 } // namespace util
+

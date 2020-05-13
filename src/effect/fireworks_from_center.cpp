@@ -1,6 +1,5 @@
 #include "fireworks_from_center.h"
 #include "../driver/cube_extend.h"
-#include "../utility/utils.h"
 #include "../utility/image_lib.h"
 
 

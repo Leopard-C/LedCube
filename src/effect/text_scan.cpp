@@ -1,7 +1,6 @@
 #include "./text_scan.h"
 #include "../utility/image_lib.h"
-#include "../utility/utils.h"
-#include <cstring>
+
 
 void TextScanEffect::setText(std::string text) {
     ImageLib::validate(text);
@@ -76,5 +75,4 @@ bool TextScanEffect::readFromFP(FILE* fp) {
 
     return true;
 }
-
 

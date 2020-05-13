@@ -36,3 +36,4 @@ public:
 private:
     std::vector<Event> events_;
 };
+

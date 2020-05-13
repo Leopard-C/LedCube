@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <vector>
 #include <array>
 #include <set>
 #include "../driver/cube_extend.h"
@@ -25,5 +24,5 @@ private:
 
 private:
     static std::set<std::string> cmds; 
-
 };
+

@@ -1,6 +1,5 @@
 #pragma once
-#include "effect.h"
-#include <vector>
+#include "./effect.h"
 
 
 class RandomLightEffect : public Effect {
@@ -17,7 +16,7 @@ public:
                 this->together = together;
 
             if (maxNum < 0)
-                this->maxNum = 1;
+                this->maxNum = 0;
             else if (maxNum > 512)
                 this->maxNum = 512;
             else
@@ -42,3 +41,4 @@ public:
 private:
     std::vector<Event> events_;
 };
+

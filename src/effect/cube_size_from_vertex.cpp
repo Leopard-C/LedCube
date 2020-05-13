@@ -1,6 +1,5 @@
 #include "cube_size_from_vertex.h"
 #include "../driver/cube_extend.h"
-#include "../utility/utils.h"
 
 extern LedCube cube;
 

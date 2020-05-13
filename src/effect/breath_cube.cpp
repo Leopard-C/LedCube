@@ -1,5 +1,4 @@
 #include "./breath_cube.h"
-#include "../utility/utils.h"
 
 void BreathCubeEffect::show() {
     for (auto& event : events_) {
@@ -76,6 +75,4 @@ bool BreathCubeEffect::readFromFP(FILE* fp) {
 
     return true;
 }
-
-
 

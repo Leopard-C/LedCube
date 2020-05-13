@@ -56,7 +56,9 @@ enum {
     Image_Like        = Image_Base + 30,
     Image_Coin        = Image_Base + 31,
     Image_Collection  = Image_Base + 32,
+
 };
+
 
 class ImageLib {
 public:
@@ -70,6 +72,4 @@ public:
     static std::map<std::string, int> keyTable;
     static std::map<int, std::array<std::array<char, 8>, 8>> table;
 };
-
-
 

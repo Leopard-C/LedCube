@@ -16,7 +16,7 @@ bool LedCube::isRunning = true;
 bool LedCube::isBackgroundThreadQuit = true;
 std::mutex LedCube::mutex_;
 bool LedCube::setuped = false;
-int LedCube::loopCount = 150;
+int LedCube::loopCount = LedCube::DefaultLoopCount;
 
 
 LedCube::~LedCube() {
@@ -64,8 +64,6 @@ void LedCube::update() {
 }
 
 
-// private method !!
-//
 void LedCube::reset() {
     // 74hc154
     // set G1 or G2 to HIGH
@@ -80,6 +78,7 @@ void LedCube::reset() {
         digitalWrite(vcc[i], LOW);
     }
 
+    // light off all the LEDs
     for (int z = 0; z < 8; ++z) {
         for (int x = 0; x < 8; ++x) {
             for (int y = 0; y < 8; ++y) {
@@ -88,6 +87,9 @@ void LedCube::reset() {
             }
         }
     }
+
+    // set loopCount to default (not zero, see the function)
+    setLoopCount(0);
 }
 
 
@@ -105,12 +107,13 @@ void LedCube::backgroundThread() {
         for (int z = 0; z < 8; ++z) {
             for (int x = 0; x < 8; ++x) {
                 int idx = x / 2;
+                // power on the layer z
                 digitalWrite(vcc[z], HIGH);
                 for (int y = 0; y < 8; ++y) {
                     if (leds[z][x][y] == LED_ON) {
                         x74hc154[idx].setOutput(y + 8 * (x % 2));
                         x74hc154[idx].enable(true);
-                        // slepp servel nanoseconds
+                        // slepp serveral nanoseconds
                         // shouldn't use:
                         //   std::this_thread::sleep_for(std::chrono::nanoseconds(100));
                         //   even if you want to sleep 1 ns, it will consume 10000+ ns really
@@ -120,10 +123,13 @@ void LedCube::backgroundThread() {
                         x74hc154[idx].enable(false);
                     }
                 }
+                // power off the layer z
                 digitalWrite(vcc[z], LOW);
             }
         }
         mutex_.unlock();
+        // delay some time
+        //   slepp serveral nanoseconds
         for (int i = 0; i < 5000; ++i) {
             //;
         }
@@ -140,13 +146,7 @@ void LedCube::backgroundThread() {
  *
 ** **********************************/
 void LedCube::clear() {
-    for (int z = 0; z < 8; ++z) {
-        for (int x = 0; x < 8; ++x) {
-            for (int y = 0; y < 8; ++y) {
-                ledsBuff[z][x][y] = LED_OFF;
-            }
-        }
-    }
+    memset(ledsBuff, LED_OFF, 512);
 }
 
 
@@ -542,45 +542,14 @@ void LedCube::getImageInLayerX(Array2D_8_8& image, int imageCode, Direction view
     }
 }
 
-void LedCube::showStringInLayerZ(std::string str, int interval, int z, Direction viewDirection, Angle rotate) {
-    ImageLib::validate(str);
-    for (auto ch : str) {
-        lightLayerZ(ch, z, viewDirection, rotate);
-        if (ch == ' ')
-            std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
-        else
-            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
-    }
-}
 
-void LedCube::showStringInLayerY(std::string str, int interval, int y, Direction viewDirection, Angle rotate) {
-    ImageLib::validate(str);
-    for (auto ch : str) {
-        lightLayerY(ch, y, viewDirection, rotate);
-        if (ch == ' ')
-            std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
-        else
-            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
-    }
-}
-
-void LedCube::showStringInLayerX(std::string str, int interval, int x, Direction viewDirection, Angle rotate) {
-    ImageLib::validate(str);
-    for (auto ch : str) {
-        lightLayerX(ch, x, viewDirection, rotate);
-        if (ch == ' ')
-            std::this_thread::sleep_for(std::chrono::milliseconds(interval / 2));
-        else
-            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
-    }
-}
-
-
-/*********************************
+/*****************************************
  *
  *   Copy (or move) layer
+ *     copy: set clearZFrom to false
+ *     move: set clearZFrom to true
  *
-**********************************/
+******************************************/
 void LedCube::copyLayerX(int xFrom, int xTo, bool clearXFrom) {
     if (clearXFrom) {
         for (int y = 0; y < 8; ++y) {
@@ -815,9 +784,12 @@ void LedCube::lightSqureInLayerX(int x, int minY, int maxY, int minZ, int maxZ, 
 }
 
 
-/*********************************
+/*******************************************
+ *
  *   Light a circle 
-*********************************/
+ *     Valid diameter: 1, 2, 3, 4
+ *
+*******************************************/
 void LedCube::lightCircleInLayerX(int x, int diameter, FillType fill) {
     if (fill == FILL_EDGE) {
         lightLayerX(x, Image_Circle_Edge_1 + diameter - 1, X_ASCEND, ANGLE_0);
@@ -844,5 +816,4 @@ void LedCube::lightCircleInLayerZ(int z, int diameter, FillType fill) {
         lightLayerZ(z, Image_Circle_Solid_1 + diameter - 1, Z_ASCEND, ANGLE_0);
     }
 }
-
 

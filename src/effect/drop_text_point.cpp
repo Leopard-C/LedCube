@@ -1,6 +1,5 @@
 #include "./drop_text_point.h"
 #include "../utility/image_lib.h"
-#include "../utility/utils.h"
 
 
 void DropTextPointEffect::setText(const std::string& str) {
@@ -80,5 +79,4 @@ bool DropTextPointEffect::readFromFP(FILE* fp) {
 
     return true;
 }
-
 

@@ -1,3 +1,4 @@
+#pragma once
 #include "./effect.h"
 
 
@@ -31,3 +32,4 @@ public:
 private:
     std::vector<Event> events_;
 };
+

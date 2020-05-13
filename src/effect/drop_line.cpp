@@ -1,6 +1,6 @@
 #include "drop_line.h"
-#include "../utility/utils.h"
 #include "../utility/image_lib.h"
+
 
 void DropLineEffect::show() {
     for (auto& event : events_) {

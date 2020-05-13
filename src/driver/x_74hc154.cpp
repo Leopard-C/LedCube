@@ -1,6 +1,5 @@
 #include "./x_74hc154.h"
 #include <iostream>
-#include <cstring>
 #include <wiringPi.h>
 
 int X74hc154::hex[16][4] =
@@ -44,8 +43,6 @@ void X74hc154::setup(int a, int b, int c, int d, int g) {
     digitalWrite(pinD, LOW);
     digitalWrite(pinG, HIGH);
 
-    last_input = hex[0];
-
     enable(false);
 }
 
@@ -57,24 +54,9 @@ void X74hc154::setOutput(char code) {
     // digit to binary
     int* input = hex[code];
 
-//    printf("code: %2d ", code);
-//    for (int i = 3; i > -1; --i)
-//        printf("%d", input[i]);
-//    printf("\n");
-
-  //  if (input[0] != last_input[0]) {
-        digitalWrite(pinD, input[0]);
-   // }
-    //if (input[1] != last_input[1]) {
-        digitalWrite(pinC, input[1]);
-  //  }
-  //  if (input[2] != last_input[2]) {
-        digitalWrite(pinB, input[2]);
-  //  }
-  //  if (input[3] != last_input[3]) {
-        digitalWrite(pinA, input[3]);
-  //  }
-
-  //  last_input = input;
+    digitalWrite(pinD, input[0]);
+    digitalWrite(pinC, input[1]);
+    digitalWrite(pinB, input[2]);
+    digitalWrite(pinA, input[3]);
 }
 

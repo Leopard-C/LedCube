@@ -1,15 +1,18 @@
 #include "./random_height.h"
-#include "../utility/utils.h"
-#include <chrono>
+
 
 void RandomHeightEffect::show() {
     for (auto& event : events_) {
-        show(event.together, event.shape, event.duration, event.interval1, event.interval2);
+        show(event.together, event.shape, event.duration,
+                event.interval1, event.interval2);
     }
 }
 
-void RandomHeightEffect::show(int together, ShapeType shape, int duration, int interval1, int interval2) {
-    cube.clear();
+
+void RandomHeightEffect::show(int together, ShapeType shape, int duration,
+        int interval1, int interval2)
+{
+    Call(cube.clear());
 
     int targetHeight[8][8];
     int currentHeight[8][8];
@@ -96,3 +99,4 @@ bool RandomHeightEffect::readFromFP(FILE* fp) {
 
     return true;
 }
+

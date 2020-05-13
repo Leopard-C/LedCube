@@ -3,8 +3,10 @@
 #include <thread>
 #include <fstream>
 #include <vector>
+#include <string>
 #include <cstring>
 #include "../driver/cube.h"
+#include "../utility/utils.h"
 
 extern LedCube cube;
 
