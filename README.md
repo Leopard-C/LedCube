@@ -4,7 +4,26 @@
 
 目录：
 
-[TOC]
+      * [LED CUBE. (Driven by RaspberryPi and 74HC154 chip)](#led-cube-driven-by-raspberrypi-and-74hc154-chip)
+      * [一、仓库目录结构](#一仓库目录结构)
+      * [二、核心类LedCube解析（src/driver/cube.h)](#二核心类ledcube解析srcdrivercubeh)
+         * [2.1 setup()](#21-setup)
+         * [2.2 update()](#22-update)
+         * [2.3 quit()](#23-quit)
+         * [2.4 clear()](#24-clear)
+         * [2.5 修改（x,y,z)  处LED灯状态](#25-修改xyz--处led灯状态)
+         * [2.6 点亮某一个面（Layer)](#26-点亮某一个面layer)
+         * [2.7 点亮一行或一列](#27-点亮一行或一列)
+         * [2.8 点亮/熄灭一条空间直线](#28-点亮熄灭一条空间直线)
+         * [2.9 绘制正方形 / 矩形](#29-绘制正方形--矩形)
+         * [2.10 绘制立方体 / 长方体](#210-绘制立方体--长方体)
+         * [2.11 复制 / 移动一个面](#211-复制--移动一个面)
+         * [2.12 setLoopCount(int count)](#212-setloopcountint-count)
+      * [三、特效](#三特效)
+      * [四、EML文件](#四eml文件)
+      * [五、展示（图片）](#五展示图片)
+      * [六、展示（视频）](#六展示视频)
+      * [END](#end)
 
 
 ## 一、仓库目录结构
@@ -502,7 +521,7 @@ protected:
 
 ## 六、展示（视频）
 
-<iframe height="600" width="300" src="//player.bilibili.com/player.html?aid=200740280&bvid=BV1Kz411B7KT&cid=190358235&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+<iframe src="//player.bilibili.com/player.html?aid=200740280&bvid=BV1Kz411B7KT&cid=190358235&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="width: 640px; height: 430px; max-width: 100%"> </iframe>
 
 
 
