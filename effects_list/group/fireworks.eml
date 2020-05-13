@@ -1,0 +1,41 @@
+
+<FireworksFromCenter>
+<EVENTS>
+  <EVENT>  CIRCLE FILL_EDGE 50 150 50
+  <EVENT>  CIRCLE FILL_SOLID 50 150 50
+  <EVENT>  RECTANGLE FILL_EDGE  50 150 50
+  <EVENT>  RECTANGLE FILL_SOLID 50 150 50
+  <EVENT>  RECTANGLE FILL_EDGE  50 150 50
+<END_EVENTS>
+<END>
+
+<LayerScan>
+<IMAGESCODE>
+  <CODE> Image_Square_Edge_4
+  <#><CODE>  Letter_A
+<END_IMAGESCODE>
+<EVENTS>
+  <#####> viewDirection scanDirection rotate  together interavl1 interval2
+  <EVENT> Z_ASCEND   Z_DESCEND  ANGLE_0  1  100  50
+<END_EVENTS>
+<END>
+
+
+<FireworksFromCenter>
+<EVENTS>
+  <EVENT>  RECTANGLE FILL_SOLID 50 150 0
+<END_EVENTS>
+<END>
+
+
+<LayerScan>
+<IMAGESCODE>
+  <CODE> Image_Fill
+<END_IMAGESCODE>
+<EVENTS>
+  <#####> viewDirection scanDirection rotate  together interavl1 interval2
+  <EVENT> Z_ASCEND   Z_DESCEND  ANGLE_0  1  100  50
+<END_EVENTS>
+<END>
+
+<END><END>

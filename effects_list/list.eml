@@ -1,0 +1,454 @@
+
+<##>------------------------------- Count Down --------------------------------
+
+<LayerScan>
+<IMAGESCODE>
+  <####> imageCode
+  <CODE> 5
+  <CODE> 4
+  <CODE> 3
+  <CODE> 2
+  <CODE> 1
+<END_IMAGESCODE>
+<EVENTS>
+  <#####> viewDirection scanDirection rotate  together interavl1 interval2
+  <EVENT> X_DESCEND  X_ASCEND  ANGLE_0        1  125 125
+<END_EVENTS>
+<END>
+
+<END><END>
+
+
+<##>----------------------------- Layer Scan -------------------------------
+<##>
+<##>------------------------ Like Coin Collection --------------------------
+
+<LayerScan>
+<IMAGESCODE>
+  <CODE> Image_Like
+  <CODE> Image_Coin
+  <CODE> Image_Collection
+<END_IMAGESCODE>
+<EVENTS>
+  <#####> viewDirection scanDirection rotate  together interavl1 interval2
+  <EVENT> X_DESCEND  X_ASCEND  ANGLE_0  1  100  500
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------------- Layer Scan --------------------------------
+
+<LayerScan>
+<IMAGESCODE>
+  <CODE> Image_Fill
+<END_IMAGESCODE>
+<EVENTS>
+  <#####> viewDirection scanDirection rotate  together interavl1 interval2
+  <EVENT> X_DESCEND  X_ASCEND  ANGLE_0  1  100  50
+  <EVENT> Y_DESCEND  Y_ASCEND  ANGLE_0  1  100  50
+  <EVENT> Z_DESCEND  Z_ASCEND  ANGLE_0  1  100  50
+  <EVENT> X_ASCEND   X_DESCEND ANGLE_0  1  100  50
+  <EVENT> Y_ASCEND   Y_DESCEND ANGLE_0  1  100  50
+  <EVENT> Z_ASCEND   Z_DESCEND ANGLE_0  1  100  50
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------------- Drop Line --------------------------------
+
+<DropLine>
+<IMAGESCODE>
+  <CODE>  IMAGE_FILL
+<END_IMAGESCODE>
+<EVENTS>
+  <#####>  viewDirection dropDirection lineParallel rotate  together interval1 interval2
+  <EVENT> X_ASCEND  X_ASCEND  PARALLEL_Y ANGLE_0            3 30 30
+  <EVENT> X_ASCEND  X_DESCEND PARALLEL_Y ANGLE_0            3 30 30
+  <EVENT> X_ASCEND  X_ASCEND  PARALLEL_Z ANGLE_0            3 30 30
+  <EVENT> X_ASCEND  X_DESCEND PARALLEL_Z ANGLE_0            3 30 30
+  <EVENT> Z_ASCEND  Z_ASCEND  PARALLEL_X ANGLE_0            3 30 30
+  <EVENT> Z_ASCEND  Z_DESCEND PARALLEL_X ANGLE_0            3 30 30
+  <EVENT> Z_ASCEND  Z_ASCEND  PARALLEL_Y ANGLE_0            3 30 30
+  <EVENT> Z_ASCEND  Z_DESCEND PARALLEL_Y ANGLE_0            3 30 30
+
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------------- Drop Point --------------------------------
+
+<DropPoint>
+<IMAGESCODE>
+  <CODE>  IMAGE_FILL
+<END_IMAGESCODE>
+<EVENTS>
+  <#####>  viewDirection dropDirection lineParallel rotate    isShape      together interval1 interval2
+  <EVENT>  X_ASCEND      X_ASCEND      PARALLEL_Y   ANGLE_0   S_SHAPE      3 10 30
+  <EVENT>  Z_ASCEND      Z_DESCEND     PARALLEL_X   ANGLE_0   NO_S_SHAPE   3 10 30
+<END_EVENTS>
+<END>
+
+
+
+<##>-------------------------- Random Drop Point  ------------------------------
+
+<RandomDropPoint>
+<IMAGESCODE>
+  <CODE>  IMAGE_FILL
+<END_IMAGESCODE>
+<EVENTS>
+  <#####>    viewDirection, scanDirection, rotate,   togetherView, togetherScan, interval1, interval2
+  <EVENT>  X_DESCEND  X_ASCEND   ANGLE_0           3 1 10 20
+  <EVENT>  Y_ASCEND   Y_DESCEND  ANGLE_0           3 1 10 20
+  <EVENT>  Z_DESCEND  Z_ASCEND   ANGLE_0           1 1 12 20
+  <EVENT>  Z_DESCEND  Z_DESCEND  ANGLE_0           1 1 12 20
+  <EVENT>  Z_DESCEND  Z_ASCEND   ANGLE_0           2 1 12 20
+  <EVENT>  Z_DESCEND  Z_DESCEND  ANGLE_0           2 1 12 20
+  <EVENT>  Z_DESCEND  Z_ASCEND   ANGLE_0           4 1 10 20
+  <EVENT>  Z_DESCEND  Z_DESCEND  ANGLE_0           4 1 10 200
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------ Rise and Fall Mode1 ----------------------------
+
+<RiseAndFallMode1>
+<EVENTS>
+  <#####>   count interval1 interval2
+  <EVENT>  1 90 0
+  <EVENT>  1 70 0
+  <EVENT>  1 50 200
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------ Rise and Fall Mode2 -----------------------------
+
+<RiseAndFallMode2>
+<EVENTS>
+  <#####>  count interval1 interval2
+  <EVENT>  1 90 0
+  <EVENT>  1 70 0
+  <EVENT>  1 50 200
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------- Cube Size From Vertex ---------------------------
+
+<CubeSizeFromVertex>
+<EVENTS>
+  <#####>  xDirection yDirection zDirection changeType fillType interval1 interval2
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_ASCEND  SMALL_TO_BIG FILL_EDGE    60 0
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_ASCEND  BIG_TO_SMALL FILL_EDGE    60 0
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_ASCEND  SMALL_TO_BIG FILL_SURFACE 60 0
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_ASCEND  BIG_TO_SMALL FILL_SURFACE 60 0
+
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_DESCEND SMALL_TO_BIG FILL_EDGE    60 0
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_DESCEND BIG_TO_SMALL FILL_EDGE    60 0
+
+  <EVENT>  X_ASCEND  Y_DESCEND Z_ASCEND  SMALL_TO_BIG FILL_EDGE    60 0
+  <EVENT>  X_ASCEND  Y_DESCEND Z_ASCEND  BIG_TO_SMALL FILL_EDGE    60 0
+
+  <EVENT>  X_DESCEND Y_DESCEND Z_ASCEND  SMALL_TO_BIG FILL_EDGE    60 0
+  <EVENT>  X_DESCEND Y_DESCEND Z_ASCEND  BIG_TO_SMALL FILL_EDGE    60 0
+  <EVENT>  X_DESCEND Y_DESCEND Z_ASCEND  SMALL_TO_BIG FILL_SURFACE 60 0
+  <EVENT>  X_DESCEND Y_DESCEND Z_ASCEND  BIG_TO_SMALL FILL_SURFACE 60 0
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------------ Breath cube ------------------------------
+
+<BreathCube>
+<EVENTS>
+  <EVENT> 1 1 1 6 6 6  FILL_SOLID 3 30 100
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------- Cube Size From Inner ----------------------------
+
+<CubeSizeFromInner>
+<EVENTS>
+  <#####>  changeType   fillType interval1 interval2
+  <EVENT>  SMALL_TO_BIG FILL_EDGE 100 0 
+  <EVENT>  BIG_TO_SMALL FILL_EDGE 100 0 
+  <EVENT>  SMALL_TO_BIG FILL_EDGE 100 0 
+  <EVENT>  BIG_TO_SMALL FILL_EDGE 100 0 
+  <EVENT>  SMALL_TO_BIG FILL_EDGE 100 0 
+  <EVENT>  BIG_TO_SMALL FILL_EDGE 100 0 
+  <EVENT>  SMALL_TO_BIG FILL_SURFACE 100 0 
+  <EVENT>  BIG_TO_SMALL FILL_SURFACE 100 0 
+  <EVENT>  SMALL_TO_BIG FILL_SURFACE 100 0 
+  <EVENT>  BIG_TO_SMALL FILL_SURFACE 100 0 
+<END_EVENTS>
+<END>
+
+
+
+
+<##>----------------------------  Random Light --------------------------------
+
+<RandomLight>
+<EVENTS>
+   <#####> state   together maxNum interval1 interval2
+   <EVENT> LED_ON  1 200 50 10
+   <EVENT> LED_OFF 1 200 50 200
+<END_EVENTS>
+<END>
+
+
+
+<##>--------------------------------- Snake ---------------------------------
+
+<Snake>
+<EVENTS>
+  <#####>  xDirection, yDirection, zDirection   length, interval1, interval2
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_ASCEND         6 30 200
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_DESCEND        6 30 200
+  <EVENT>  X_ASCEND  Y_DESCEND Z_ASCEND         6 30 200
+  <EVENT>  X_ASCEND  Y_DESCEND Z_DESCEND        6 30 200
+  <EVENT>  X_DESCEND Y_ASCEND  Z_ASCEND         6 30 200
+  <EVENT>  X_DESCEND Y_ASCEND  Z_DESCEND        6 30 200
+  <EVENT>  X_DESCEND Y_DESCEND Z_ASCEND         6 30 200
+  <EVENT>  X_DESCEND Y_DESCEND Z_DESCEND        6 30 200
+<END_EVENTS>
+<END>
+
+
+
+<##>--------------------------- Random Height -------------------------------
+
+<RandomHeight>
+<EVENTS>
+  <#>      together, shapeType, duration, interval1, interval2
+  <EVENT>  20 LINE  5000 100 0
+  <EVENT>  20 POINT 5000 100 0
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------- Cube Size From Vertex ---------------------------
+
+<CubeSizeFromVertex>
+<EVENTS>
+  <#####>  xDirection yDirection zDirection changeType fillType interval1 interval2
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_ASCEND  SMALL_TO_BIG FILL_EDGE 60 0
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_ASCEND  BIG_TO_SMALL FILL_EDGE 60 0
+
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_DESCEND SMALL_TO_BIG FILL_EDGE 60 0
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_DESCEND BIG_TO_SMALL FILL_EDGE 60 0
+
+  <EVENT>  X_ASCEND  Y_DESCEND Z_ASCEND  SMALL_TO_BIG FILL_EDGE 60 0
+  <EVENT>  X_ASCEND  Y_DESCEND Z_ASCEND  BIG_TO_SMALL FILL_EDGE 60 0
+
+  <EVENT>  X_DESCEND Y_DESCEND Z_ASCEND  SMALL_TO_BIG FILL_EDGE 60 0
+  <EVENT>  X_DESCEND Y_DESCEND Z_ASCEND  BIG_TO_SMALL FILL_EDGE 60 0
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------- Wander Edge Join ------------------------------
+
+<WanderEdgeJoin>
+<EVENTS>
+  <#####> xDirection yDirection zDirection  together interval1 interval2
+  <EVENT> X_ASCEND  Y_ASCEND  Z_ASCEND      7 50 100
+  <EVENT> X_DESCEND Y_DESCEND Z_ASCEND      5 50 100
+  <EVENT> X_ASCEND  Y_DESCEND Z_DESCEND     7 50 100
+  <EVENT> X_DESCEND Y_ASCEND  Z_DESCEND     5 50 100
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------- Wander Edge Join Auto Increace ------------------------
+
+<WanderEdgeJoinAutoInc>
+<EVENTS>
+  <#####> xDirection yDirection zDirection  interval1 interval2
+  <EVENT> X_ASCEND  Y_ASCEND  Z_ASCEND      40 100
+  <EVENT> X_DESCEND Y_DESCEND Z_ASCEND      40 100
+  <EVENT> X_DESCEND Y_DESCEND Z_DESCEND     40 100
+  <EVENT> X_ASCEND  Y_ASCEND  Z_DESCEND     40 100
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------------ Text Scan -------------------------------
+<##>
+<##>------------------------ Like Coin Collection --------------------------
+
+<TextScan>
+<TEXTS>
+  <TEXT>  LIKE   COIN   COLLECTION
+<END_TEXTS>
+<EVENTS>
+  <#####> viewDirection scanDirection rotate  together interval1 interval2
+  <EVENT> X_DESCEND X_ASCEND  ANGLE_0         1 100 100
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------------ Fireworks -------------------------------
+
+<EML>
+  <FILE>  /home/pi/dev/cpp/LedCube/effects_list/group/fireworks.eml
+<END>
+
+
+
+<##>------------------------------- Drop Line --------------------------------
+
+<DropLine>
+<IMAGESCODE>
+  <CODE>  IMAGE_FILL
+<END_IMAGESCODE>
+<EVENTS>
+  <#####>  viewDirection dropDirection lineParallel rotate  together interval1 interval2
+  <EVENT> X_ASCEND  X_ASCEND  PARALLEL_Y ANGLE_0            3 30 30
+  <EVENT> X_ASCEND  X_DESCEND PARALLEL_Y ANGLE_0            3 30 30
+  <EVENT> Z_ASCEND  Z_ASCEND  PARALLEL_Y ANGLE_0            3 30 30
+  <EVENT> Z_ASCEND  Z_DESCEND PARALLEL_Y ANGLE_0            3 30 30
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------ Rise and Fall Mode3 ------------------------------
+
+<RiseAndFallMode3>
+<EVENTS>
+  <#####>  layer param count interval1 interval2
+  <EVENT>  Layer_XY45  0 3 10 0
+  <EVENT>  Layer_XY135 0 3 10 0
+  <EVENT>  Layer_X     0 3 10 0
+  <EVENT>  Layer_Y     7 3 10 0
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------ Rise and Fall Mode4 ------------------------------
+
+<RiseAndFallMode4>
+<EVENTS>
+  <#####>  layer        interval1 interval2 interval3
+  <EVENT>  Layer_X      10 100 0
+  <EVENT>  Layer_Y      10 100 0
+<END_EVENTS>
+<END>
+
+
+
+<##>--------------------------------- Snake ---------------------------------
+
+<Snake>
+<EVENTS>
+  <#####>  xDirection, yDirection, zDirection   length, interval1, interval2
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_ASCEND         6 30 200
+  <EVENT>  X_ASCEND  Y_ASCEND  Z_DESCEND        6 30 200
+  <EVENT>  X_ASCEND  Y_DESCEND Z_DESCEND        6 30 200
+  <EVENT>  X_DESCEND Y_ASCEND  Z_DESCEND        6 30 200
+  <EVENT>  X_DESCEND Y_DESCEND Z_ASCEND         6 30 200
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------ Rise and Fall Mode5 ------------------------------
+
+<RiseAndFallMode5>
+<EVENTS>
+  <#####>  layer       count interval1 interval2
+  <EVENT>  Layer_X     3 10 0
+  <EVENT>  Layer_Y     3 10 0
+  <EVENT>  Layer_XY45  3 7 0
+  <EVENT>  Layer_XY135 3 7 0
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------ Rise and Fall Mode6 ------------------------------
+
+<RiseAndFallMode6>
+<EVENTS>
+  <#####>  layer       count interval1 interval2
+  <EVENT>  Layer_X     8 10 0
+  <EVENT>  Layer_Y     8 10 0
+  <EVENT>  Layer_XY45  6  10 0
+  <EVENT>  Layer_XY135 6  10 0
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------------ Wander Edge -------------------------------
+
+<WanderEdge>
+<EVENTS>
+  <#####> together maxVertexCount interval1 interval2
+  <EVENT> 5 50  60 125
+<END_EVENTS>
+<END>
+
+
+
+<##>-------------------------- Random Drop Point  ------------------------------
+
+<RandomDropPoint>
+<IMAGESCODE>
+  <CODE>  IMAGE_FILL
+<END_IMAGESCODE>
+<EVENTS>
+  <#####>    viewDirection, scanDirection, rotate,   togetherView, togetherScan, interval1, interval2
+  <EVENT>  Z_DESCEND  Z_ASCEND   ANGLE_0           3 1 15 20
+  <EVENT>  Z_DESCEND  Z_DESCEND  ANGLE_0           3 1 15 200
+<END_EVENTS>
+<END>
+
+
+
+<##>------------------------------- Text Scan --------------------------------
+
+<TextScan>
+<TEXTS>
+  <TEXT>  END
+<END_TEXTS>
+<EVENTS>
+  <#####> viewDirection scanDirection rotate  together interval1 interval2
+  <EVENT> X_DESCEND X_ASCEND  ANGLE_0         1 100 100
+<END_EVENTS>
+<END>
+
+
+
+<##>----------------------------- Script --------------------------------
+
+
+
+<Script>
+<#  <FILE> /home/pi/dev/cpp/LedCube/effects_list/script/script1
+<END>
+
+
+<END><END>
+
+<##> ----------------------------- END ----------------------------------
+<##> ----------------------------- END ----------------------------------
+<##> ----------------------------- END ----------------------------------
+
