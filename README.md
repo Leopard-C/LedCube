@@ -2,6 +2,7 @@
 
 【驱动程序   +   20多种特效】
 
+
 ## 一、仓库目录结构
 
 ```bash
@@ -75,9 +76,16 @@
 └── xmake.lua              # 使用 xmake 构建
 ```
 
+## 二、原理图
+
+[原理图(pdf)](http://public.icrystal.top/doc/markdown/README/LedCube_2020-06-19.pdf)
+
+我用[力创EDA](https://lceda.cn/editor)自己画的，并不专业，不过还是比较清晰的。
+
+制作教程，参考视频：https://www.bilibili.com/video/BV1Ex411C718
 
 
-## 二、核心类LedCube解析（`src/driver/cube.h`)
+## 三、核心类LedCube解析（`src/driver/cube.h`)
 
 程序运行大概的流程：
 
@@ -370,7 +378,7 @@ for (int i = 0; i < loopCount; ++i) {
 >1. https://frenchfries.net/paul/dfly/nanosleep.html
 >2. https://stackoverflow.com/questions/18071664/stdthis-threadsleep-for-and-nanoseconds
 
-## 三、特效
+## 四、特效
 
 `Effect`基类，其他特效类都继承自该类，需要重写以下两个虚函数
 
@@ -483,7 +491,7 @@ protected:
 
 解析`eml`文件的容错能力比较低，只会简单地进行语法检查，应该保证传入的`eml`文件没有语法错误。
 
-## 五、展示（图片）
+## 六、展示（图片）
 
 （光立方做的比较丑，emmm，关键是特效代码嘛！）
 
@@ -495,7 +503,7 @@ protected:
 
 ![001](assets/README/IMG_20200504_224737.jpg)
 
-## 六、展示（视频）
+## 七、展示（视频）
 
 <a href="https://www.bilibili.com/video/BV1Kz411B7KT" target="_blank">
     <img src="assets/README/bilibili-video.png">
@@ -503,3 +511,5 @@ protected:
 
 
 ## END
+
+<leopard.c@outlook.com>

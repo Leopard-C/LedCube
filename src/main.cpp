@@ -107,8 +107,10 @@ int main(int argc, char** argv) {
 int run(const char* effectDescFile) {
     // 1. remove annotation
     std::ifstream ifs(effectDescFile);
-    if (!ifs.is_open())
+    if (!ifs.is_open()) {
+        printf("Open file failed: %s\n", effectDescFile);
         return 1;
+    }
 
     struct timespec tn;
     clock_gettime(CLOCK_REALTIME, &tn);
