@@ -80,7 +80,7 @@
 
 [原理图(pdf)](http://public.icrystal.top/doc/markdown/README/LedCube_2020-06-19.pdf)
 
-我用[力创EDA](https://lceda.cn/editor)自己画的，并不专业，不过还是比较清晰的。
+我用[立创EDA](https://lceda.cn/editor)自己画的，并不专业，不过还是比较清晰的。
 
 制作教程，参考视频：https://www.bilibili.com/video/BV1Ex411C718
 
